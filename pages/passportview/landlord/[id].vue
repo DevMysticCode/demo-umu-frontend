@@ -2123,9 +2123,24 @@
           </div>
           <div class="lp-modal-body">
             <p class="lp-modal-intro">
-              A 3-hour read-only link. The tenant sees only the documents they're entitled to -
+              A read-only link. The tenant sees only the documents they're entitled to -
               AST, deposit certificate, How-to-Rent, Right-to-Rent confirmation, gas / EICR / EPC.
             </p>
+            <p class="lp-share-duration-label">How long should the link stay active?</p>
+            <div class="lp-share-duration-options" role="radiogroup" aria-label="Link duration">
+              <button
+                v-for="opt in tenantShareDurationOptions"
+                :key="opt.value"
+                type="button"
+                class="lp-share-duration-chip"
+                :class="{ 'is-selected': tenantShareDurationHours === opt.value }"
+                role="radio"
+                :aria-checked="tenantShareDurationHours === opt.value"
+                @click="tenantShareDurationHours = opt.value"
+              >
+                {{ opt.label }}
+              </button>
+            </div>
             <div v-if="!tenantShareUrl" class="lp-share-empty">Tap "Generate link" to create one.</div>
             <div v-else class="lp-share-link">
               <input :value="tenantShareUrl" readonly class="lp-share-input" />
@@ -5004,9 +5019,24 @@ async function onConvertConfirm() {
   }
 }
 
+// Fixed menu of lifetimes, matching the backend's allow-list exactly
+// (SHARE_LINK_DURATION_HOURS in umu-backend/src/passport/dto/share.dto.ts)
+// - a closed set of choices, not a free-typed number (security/launch
+// review finding #16).
+const tenantShareDurationOptions = [
+  { value: 1, label: '1 hour' },
+  { value: 3, label: '3 hours' },
+  { value: 6, label: '6 hours' },
+  { value: 24, label: '24 hours' },
+  { value: 48, label: '48 hours' },
+  { value: 72, label: '72 hours' },
+] as const
+const tenantShareDurationHours = ref<number>(3)
+
 function openTenantShare() {
   showTenantShare.value = true
   tenantShareCopied.value = false
+  tenantShareDurationHours.value = 3
 }
 
 async function generateTenantShare() {
@@ -5019,7 +5049,7 @@ async function generateTenantShare() {
       {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
-        body: { scope: 'tenant' },
+        body: { scope: 'tenant', durationHours: tenantShareDurationHours.value },
       },
     )
     tenantShareUrl.value = result.url
@@ -5934,6 +5964,19 @@ const SectionCard = defineComponent({
 .lp-modal-error { color: #b85b36; font-size: 0.75rem; font-weight: 700; text-align: center; }
 
 /* Tenant share */
+.lp-share-duration-label { font-size: 0.6875rem; font-weight: 700; color: #4a5868; margin-bottom: 8px; }
+.lp-share-duration-options { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.lp-share-duration-chip {
+  background: #fff;
+  border: 1.5px solid #e8eceb;
+  border-radius: 999px;
+  padding: 7px 13px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #4a5868;
+  cursor: pointer;
+}
+.lp-share-duration-chip.is-selected { background: #00a19a; border-color: #00a19a; color: #fff; }
 .lp-share-link { display: flex; gap: 6px; align-items: center; }
 .lp-share-input {
   flex: 1;

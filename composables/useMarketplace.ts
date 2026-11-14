@@ -335,6 +335,19 @@ export function useMarketplace() {
     })
   }
 
+  // Contract/dispute evidence photos go to the private job-evidence
+  // bucket, not the public job-photos one uploadPhoto() uses for job
+  // listings (security/launch review finding #12).
+  const uploadEvidencePhoto = async (file: File): Promise<{ url: string }> => {
+    const form = new FormData()
+    form.append('file', file)
+    return $fetch<{ url: string }>(`${BASE_URL}/marketplace/upload-evidence-photo`, {
+      method: 'POST',
+      headers: authHeaders(),
+      body: form,
+    })
+  }
+
   const createJob = (payload: CreateJobPayload) =>
     $fetch<MarketplaceJobDetail>(`${BASE_URL}/marketplace/jobs`, {
       method: 'POST',
@@ -491,6 +504,7 @@ export function useMarketplace() {
     fetchMyStats,
     fetchMyJobs,
     uploadPhoto,
+    uploadEvidencePhoto,
     createJob,
     createOffer,
     fetchOffers,
