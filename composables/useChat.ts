@@ -13,7 +13,7 @@ export function useChat() {
   const error = ref<string | null>(null)
 
   const getToken = () =>
-    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    typeof window !== 'undefined' ? getToken() : null
 
   const sendMessage = async (text: string) => {
     const token = getToken()

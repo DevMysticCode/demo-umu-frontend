@@ -37,7 +37,7 @@ let subscribers = 0
 
 function authHeaders(): HeadersInit {
   if (typeof window === 'undefined') return {}
-  const token = localStorage.getItem('token')
+  const token = getToken()
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
 
@@ -46,7 +46,7 @@ export function useNotifications() {
   const apiBase = () => config.public.apiBase as string
 
   const isAuthed = () =>
-    typeof window !== 'undefined' && !!localStorage.getItem('token')
+    typeof window !== 'undefined' && !!getToken()
 
   async function refreshUnread() {
     if (!isAuthed()) return

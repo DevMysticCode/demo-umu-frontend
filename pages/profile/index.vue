@@ -294,7 +294,7 @@ onMounted(async () => {
   }
   try {
     const token =
-      typeof window !== 'undefined' ? localStorage.getItem('token') : null
+      typeof window !== 'undefined' ? getToken() : null
     if (token) {
       const prefs = await $fetch(
         `${config.public.apiBase}/profile/preferences`,
@@ -318,7 +318,7 @@ async function setRole(key) {
   currentRole.value = key // optimistic update
   try {
     const token =
-      typeof window !== 'undefined' ? localStorage.getItem('token') : null
+      typeof window !== 'undefined' ? getToken() : null
     const result = await $fetch(
       `${config.public.apiBase}/profile/preferences`,
       {
@@ -523,7 +523,7 @@ const deleteAccount = async () => {
   isDeletingAccount.value = true
   try {
     const token =
-      typeof window !== 'undefined' ? localStorage.getItem('token') : null
+      typeof window !== 'undefined' ? getToken() : null
     if (token) {
       await $fetch(`${config.public.apiBase}/profile/me`, {
         method: 'DELETE',
@@ -534,7 +534,7 @@ const deleteAccount = async () => {
     // Proceed with local cleanup regardless
   } finally {
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('token')
+      clearToken()
       localStorage.removeItem('redirectAfterLogin')
       sessionStorage.clear()
     }

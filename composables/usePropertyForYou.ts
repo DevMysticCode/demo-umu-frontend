@@ -91,7 +91,7 @@ export function usePropertyForYou() {
 
   async function refreshForYou() {
     const token =
-      typeof window !== 'undefined' ? localStorage.getItem('token') : null
+      typeof window !== 'undefined' ? getToken() : null
     if (!token) return
     try {
       const res = await $fetch<{ items: any[]; needsPostcode?: boolean }>(

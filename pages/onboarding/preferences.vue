@@ -1071,7 +1071,7 @@ const valueToNum: Record<string, number> = {
 async function save() {
   isLoading.value = true
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     const isBuyer =
       selectedRole.value === 'buy' || selectedRole.value === 'both'
     const isSeller =

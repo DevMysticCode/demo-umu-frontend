@@ -158,7 +158,7 @@ const registerInterest = async () => {
   isSubmitting.value = true
   errorMsg.value = ''
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     await $fetch(`${config.public.apiBase}/property/${props.propertyId}/register-interest`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },

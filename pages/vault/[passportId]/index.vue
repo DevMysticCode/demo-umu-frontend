@@ -161,7 +161,7 @@ onMounted(async () => {
   load()
   try {
     const config = useRuntimeConfig()
-    const token = localStorage.getItem('token')
+    const token = getToken()
     const passport = await $fetch(`${config.public.apiBase}/passport/${passportId}`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     })

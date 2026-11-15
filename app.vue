@@ -33,6 +33,7 @@
       :balance-after="achievementBalanceAfter"
       @done="acknowledgeAchievement"
     />
+    <CookieConsentBanner />
   </div>
 </template>
 

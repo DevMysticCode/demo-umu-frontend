@@ -227,7 +227,7 @@ async function doSearch() {
   searchProperties.value = []
   searchTotal.value = 0
   try {
-    const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof localStorage !== 'undefined' ? getToken() : null
     const results = await $fetch<any>(buildSearchUrl(0), {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -247,7 +247,7 @@ async function loadMoreResults() {
   if (searchProperties.value.length >= searchTotal.value) return
   searchLoadingMore.value = true
   try {
-    const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof localStorage !== 'undefined' ? getToken() : null
     const results = await $fetch<any>(buildSearchUrl(searchProperties.value.length), {
       headers: { Authorization: `Bearer ${token}` },
     })

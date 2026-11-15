@@ -115,7 +115,7 @@ const snapshot = ref<any>(null)
 const baseline = ref<number | null>(null)
 
 function token() {
-  return typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  return typeof window !== 'undefined' ? getToken() : null
 }
 
 function formatPrice(price: number) {

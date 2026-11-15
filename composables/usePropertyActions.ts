@@ -1,6 +1,6 @@
 function getAuthHeaders() {
   const token =
-    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    typeof window !== 'undefined' ? getToken() : null
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
 
@@ -32,7 +32,7 @@ export function usePropertyActions(propertyId?: string) {
   // Fetch current status for a single property (called on property detail page)
   async function fetchActions(id: string) {
     const token =
-      typeof window !== 'undefined' ? localStorage.getItem('token') : null
+      typeof window !== 'undefined' ? getToken() : null
     if (!token) return
     try {
       const data = await $fetch<{ wishlisted: boolean; saved: boolean }>(
@@ -48,7 +48,7 @@ export function usePropertyActions(propertyId?: string) {
     id: string,
   ): Promise<{ wishlisted: boolean } | 'unauthenticated' | 'error'> {
     const token =
-      typeof window !== 'undefined' ? localStorage.getItem('token') : null
+      typeof window !== 'undefined' ? getToken() : null
     if (!token) return 'unauthenticated'
     actionLoading.value = true
     try {
@@ -70,7 +70,7 @@ export function usePropertyActions(propertyId?: string) {
     id: string,
   ): Promise<{ saved: boolean } | 'unauthenticated' | 'error'> {
     const token =
-      typeof window !== 'undefined' ? localStorage.getItem('token') : null
+      typeof window !== 'undefined' ? getToken() : null
     if (!token) return 'unauthenticated'
     actionLoading.value = true
     try {
@@ -91,7 +91,7 @@ export function usePropertyActions(propertyId?: string) {
   // List fetchers (used by snapshot / saved-properties pages)
   async function fetchWishlist(): Promise<PropertyListItem[]> {
     const token =
-      typeof window !== 'undefined' ? localStorage.getItem('token') : null
+      typeof window !== 'undefined' ? getToken() : null
     if (!token) return []
     return $fetch<PropertyListItem[]>(`${BASE_URL}/property/wishlist`, {
       headers: getAuthHeaders(),
@@ -100,7 +100,7 @@ export function usePropertyActions(propertyId?: string) {
 
   async function fetchSavedProperties(): Promise<PropertyListItem[]> {
     const token =
-      typeof window !== 'undefined' ? localStorage.getItem('token') : null
+      typeof window !== 'undefined' ? getToken() : null
     if (!token) return []
     return $fetch<PropertyListItem[]>(`${BASE_URL}/property/saved`, {
       headers: getAuthHeaders(),
@@ -111,7 +111,7 @@ export function usePropertyActions(propertyId?: string) {
   // via "Watch this property" / WatchPropertyDrawer), distinct from Saved.
   async function fetchWatchedProperties(): Promise<PropertyListItem[]> {
     const token =
-      typeof window !== 'undefined' ? localStorage.getItem('token') : null
+      typeof window !== 'undefined' ? getToken() : null
     if (!token) return []
     return $fetch<PropertyListItem[]>(`${BASE_URL}/property/watches`, {
       headers: getAuthHeaders(),
@@ -120,7 +120,7 @@ export function usePropertyActions(propertyId?: string) {
 
   async function unwatchProperty(id: string): Promise<boolean> {
     const token =
-      typeof window !== 'undefined' ? localStorage.getItem('token') : null
+      typeof window !== 'undefined' ? getToken() : null
     if (!token) return false
     try {
       await $fetch(`${BASE_URL}/property/${id}/watch`, {

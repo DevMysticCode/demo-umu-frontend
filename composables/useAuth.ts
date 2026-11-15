@@ -11,7 +11,7 @@ export const useAuth = () => {
   const base = config.public.apiBase
 
   const getHeaders = () => {
-    const token = localStorage.getItem('token')
+    const token = getToken()
 
     return token ? { Authorization: `Bearer ${token}` } : {}
   }
@@ -69,7 +69,7 @@ export const useAuth = () => {
       method: 'POST',
       credentials: 'include',
     })
-    if (res?.token) localStorage.setItem('token', res.token)
+    if (res?.token) setToken(res.token)
     return res?.token as string
   }
 
@@ -86,7 +86,7 @@ export const useAuth = () => {
     } catch {
       // Ignore - local state is still cleared below.
     } finally {
-      localStorage.removeItem('token')
+      clearToken()
       // Stale key from before refresh tokens moved to an httpOnly cookie -
       // harmless to leave, but nothing should still be writing it.
       localStorage.removeItem('refreshToken')

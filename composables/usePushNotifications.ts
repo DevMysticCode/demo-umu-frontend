@@ -27,7 +27,7 @@ export const usePushNotifications = () => {
   // every signin (via syncTokenAfterSignin) until backend accepts it.
   const sendTokenToBackend = async (token: string): Promise<boolean> => {
     if (token) localStorage.setItem(PUSH_TOKEN_LS_KEY, token)
-    const jwt = localStorage.getItem('token')
+    const jwt = getToken()
     if (!jwt) return false
     try {
       await $fetch(`${base}/me/push-token`, {

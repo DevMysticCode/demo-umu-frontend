@@ -793,7 +793,7 @@ async function doSearch() {
   searchTotal.value = 0
   try {
     const token =
-      typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+      typeof localStorage !== 'undefined' ? getToken() : null
     const results = await $fetch<any>(buildSearchUrl(0), {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -814,7 +814,7 @@ async function loadMoreResults() {
   searchLoadingMore.value = true
   try {
     const token =
-      typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+      typeof localStorage !== 'undefined' ? getToken() : null
     const results = await $fetch<any>(
       buildSearchUrl(searchProperties.value.length),
       {
@@ -1123,7 +1123,7 @@ const watchedIds = ref<Set<string>>(new Set())
 const authGateOpen = ref(false)
 async function onWatchClick(prop: any) {
   const token =
-    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    typeof localStorage !== 'undefined' ? getToken() : null
   if (!token) {
     authGateOpen.value = true
     return

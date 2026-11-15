@@ -367,7 +367,7 @@ onMounted(async () => {
   // because the doneness heuristic only needs the answer values.
   try {
     const token =
-      typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+      typeof localStorage !== 'undefined' ? getToken() : null
     if (token) {
       const r = await fetch(
         `${config.public.apiBase}/property/${propertyId.value}/homescore`,

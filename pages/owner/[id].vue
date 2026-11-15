@@ -199,7 +199,7 @@ const onCustomInput = () => {
 
 onMounted(async () => {
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     if (!token) {
       router.push('/onboarding/signin')
       return
@@ -237,7 +237,7 @@ const sendMessage = async () => {
   isSending.value = true
   errorMsg.value = ''
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     const res = await $fetch<{ success: boolean; ownerPhone: string | null }>(
       `${config.public.apiBase}/property/${propertyId}/tap-owner`,
       {

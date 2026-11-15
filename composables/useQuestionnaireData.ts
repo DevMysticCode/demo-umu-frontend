@@ -78,7 +78,7 @@ async function submitToBackend(
   allAnswers: Record<number, any>,
 ) {
   const token =
-    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    typeof window !== 'undefined' ? getToken() : null
 
   // Map question answers to the DTO shape
   const budgetQ3 = allAnswers[3] as BudgetRange | undefined
@@ -329,7 +329,7 @@ export const useQuestionnaireData = (currentQuestion: number) => {
     // If any answers are in localStorage, refs were already pre-filled above — skip
     if (Object.keys(allStored).length > 0) return
 
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     if (!token) return
 
     try {

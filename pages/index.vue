@@ -978,7 +978,7 @@ onMounted(() => {
 // marketing landing deck, which is meant for unauthenticated visitors. The
 // fall-back for guests is the in-page landing screen.
 function dismissSubscreen() {
-  if (typeof window !== 'undefined' && localStorage.getItem('token')) {
+  if (typeof window !== 'undefined' && getToken()) {
     navigateTo('/dashboard', { replace: true })
     return
   }

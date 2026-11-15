@@ -2,7 +2,7 @@ export const usePassportApi = () => {
   const config = useRuntimeConfig()
   const base = config.public.apiBase
 
-  const token = () => localStorage.getItem('token')
+  const token = () => getToken()
 
   const headers = () => ({
     Authorization: `Bearer ${token()}`,

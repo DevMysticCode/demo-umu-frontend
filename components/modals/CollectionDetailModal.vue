@@ -136,7 +136,7 @@ const removePassport = async (passportId) => {
   if (!props.collection || removing.value) return
   removing.value = passportId
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     await $fetch(`${config.public.apiBase}/collection/${props.collection.id}/remove`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
@@ -155,7 +155,7 @@ const addPassport = async (passport) => {
   if (!props.collection || adding.value) return
   adding.value = passport.id
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     await $fetch(`${config.public.apiBase}/collection/${props.collection.id}/add`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },

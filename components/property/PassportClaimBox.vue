@@ -1015,7 +1015,7 @@ const authPromptCopy = computed(() => {
 
 function hasAuth(): boolean {
   if (typeof localStorage === 'undefined') return false
-  return Boolean(localStorage.getItem('token'))
+  return Boolean(getToken())
 }
 
 // Build the post-login redirect target. Claim → ?claim=1, watch →

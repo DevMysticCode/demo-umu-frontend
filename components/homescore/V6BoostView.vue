@@ -645,7 +645,7 @@ async function confirmUpload() {
       const config = useRuntimeConfig()
       const base = (config.public as any).apiBase || ''
       const token =
-        typeof window !== 'undefined' ? localStorage.getItem('token') : null
+        typeof window !== 'undefined' ? getToken() : null
       const fd = new FormData()
       fd.append('file', selectedFile.value)
       const parsed: any = await $fetch(

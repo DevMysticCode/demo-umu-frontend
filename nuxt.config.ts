@@ -81,20 +81,20 @@ export default defineNuxtConfig({
   // that build mode would need a <meta http-equiv> tag instead, not
   // attempted here (Needs confirmation whether bundled mode is still
   // used — capacitor.config.ts's REMOTE mode is the current build).
-  // script-src keeps 'unsafe-inline' as the conservative choice, matching
-  // umu-website-integration's own documented reasoning even though this
-  // app has no inline <script> in nuxt.config.ts today — switching to a
-  // nonce+strict-dynamic policy needs a real browser click-through this
-  // environment can't do (same caveat as the app it was ported from).
+  // script-src DROPPED 'unsafe-inline' (security review finding #7,
+  // 2026-11-15): this app has no inline <script> in nuxt.config.ts at all,
+  // so there was never anything here that needed it — Leaflet/js.stripe.com
+  // are matched by the explicit host-source entries below regardless, a
+  // CSP matching path that's independent of nonces/unsafe-inline entirely.
   security: {
     headers: {
       contentSecurityPolicy: {
         'default-src': ["'self'"],
-        // unpkg: Leaflet is loaded at runtime (document.createElement), not
-        // bundled — see SearchDrawer.vue / property/[id].vue /
-        // property-full/[id].vue.
-        'script-src': ["'self'", "'unsafe-inline'", 'https://unpkg.com', 'https://js.stripe.com'],
-        'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://api.mapbox.com', 'https://unpkg.com'],
+        // unpkg DROPPED (security/launch review finding #12, 2026-11-14):
+        // Leaflet is self-hosted via npm/Vite now — see SearchDrawer.vue /
+        // property/[id].vue / property-full/[id].vue's loadLeaflet.
+        'script-src': ["'self'", 'https://js.stripe.com'],
+        'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://api.mapbox.com'],
         'style-src-attr': ["'unsafe-inline'"],
         'font-src': ["'self'", 'https://fonts.gstatic.com', 'data:'],
         // images.pexels.com/loremflickr.com: placeholder photos (buyer-
@@ -114,12 +114,17 @@ export default defineNuxtConfig({
         // api.postcodes.io: the postcode/place-suggestion autocomplete
         // used across search and onboarding — same missing-from-the-
         // reference-CSP gap as img-src above.
+        //
+        // events.mapbox.com DELIBERATELY left off (security/launch review
+        // finding #10, 2026-11-14): Mapbox's own anonymous-usage telemetry
+        // endpoint, not needed for tiles/styles (api.mapbox.com only).
+        // Blocking it fails those background POSTs closed — fire-and-
+        // forget by design, map still renders fine.
         'connect-src': [
           "'self'",
           BACKEND_ORIGIN,
           'https://api.stripe.com',
           'https://api.mapbox.com',
-          'https://events.mapbox.com',
           'https://api.os.uk',
           'https://*.tile.openstreetmap.org',
           'https://api.postcodes.io',

@@ -54,7 +54,7 @@ export interface MessageRow {
 
 function authHeaders(): HeadersInit {
   if (typeof window === 'undefined') return {}
-  const token = localStorage.getItem('token')
+  const token = getToken()
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
 

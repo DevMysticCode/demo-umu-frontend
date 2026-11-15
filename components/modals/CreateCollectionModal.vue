@@ -101,7 +101,7 @@ const submit = async () => {
   if (saving.value) return
   saving.value = true
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     const auth = { Authorization: `Bearer ${token}` }
 
     // Create the collection

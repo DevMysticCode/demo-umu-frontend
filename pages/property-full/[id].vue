@@ -2030,19 +2030,17 @@ const epcBands = [
 ]
 
 // Leaflet map — same library as SearchDrawer
+// Security/launch review finding #12 (2026-11-14): self-hosted via
+// npm/Vite instead of unpkg — see SearchDrawer.vue's loadLeaflet for why.
 const loadLeaflet = (): Promise<any> =>
   new Promise((resolve) => {
     if ((window as any).L) return resolve((window as any).L)
-    if (!document.querySelector('link[href*="leaflet"]')) {
-      const link = document.createElement('link')
-      link.rel = 'stylesheet'
-      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
-      document.head.appendChild(link)
-    }
-    const script = document.createElement('script')
-    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
-    script.onload = () => resolve((window as any).L)
-    document.head.appendChild(script)
+    import('leaflet/dist/leaflet.css')
+    import('leaflet').then((mod) => {
+      const L = (mod as any).default ?? mod
+      ;(window as any).L = L
+      resolve(L)
+    })
   })
 
 const initMap = async () => {
@@ -2349,7 +2347,7 @@ onMounted(async () => {
 
   // Fetch enrichment data in background (non-blocking)
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     const res = await fetch(`${apiBase}/property/${propertyId}/enrichment`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     })
@@ -2371,7 +2369,7 @@ onMounted(async () => {
     }
 
     // 2. If the logged-in user has their own score, prefer it (could be more recent)
-    const token = localStorage.getItem('token')
+    const token = getToken()
     if (token && !homeScore.value) {
       const hsRes = await fetch(`${apiBase}/property/${propertyId}/homescore`, {
         headers: { Authorization: `Bearer ${token}` },

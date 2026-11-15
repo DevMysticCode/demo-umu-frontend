@@ -49,7 +49,7 @@ export const useVerifierAccess = () => {
   const base = config.public.apiBase
 
   const token = () =>
-    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    typeof window !== 'undefined' ? getToken() : null
   const authHeaders = () => ({
     Authorization: `Bearer ${token()}`,
     'Content-Type': 'application/json',

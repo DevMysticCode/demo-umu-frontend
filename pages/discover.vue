@@ -313,7 +313,7 @@ const authGateCopy = {
 const authGateRedirect = '/passport/collections'
 
 function hasToken(): boolean {
-  return typeof localStorage !== 'undefined' && !!localStorage.getItem('token')
+  return typeof localStorage !== 'undefined' && !!getToken()
 }
 
 function goToBuyerPassport() {

@@ -150,7 +150,7 @@ async function loadState() {
     state.value = 'unverified'
     return
   }
-  const token = localStorage.getItem('token')
+  const token = getToken()
   isAuthed.value = !!token
   if (!token) {
     // Guest → always show the unverified card with the "see what you get" CTA.

@@ -29,7 +29,7 @@ export function useLearn() {
   const isLoadingContinue = ref(false)
 
   const getToken = () =>
-    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    typeof window !== 'undefined' ? getToken() : null
 
   const fetchVideos = async () => {
     isLoadingVideos.value = true

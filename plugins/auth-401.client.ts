@@ -27,8 +27,8 @@ export default defineNuxtPlugin((nuxtApp) => {
       if (SKIP_PATHS.some((p) => url.includes(p))) return
 
       try {
-        if (!localStorage.getItem('token')) return // already signed out
-        localStorage.removeItem('token')
+        if (!getToken()) return // already signed out
+        clearToken()
       } catch {
         return
       }

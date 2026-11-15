@@ -285,7 +285,7 @@ const earnedStampIds = computed(() => new Set(earnedStamps.value.map((s) => s.st
 const { simulateCelebration } = usePassportAchievement()
 
 function token() {
-  return typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  return typeof window !== 'undefined' ? getToken() : null
 }
 function authHeaders() {
   return { Authorization: `Bearer ${token()}` }

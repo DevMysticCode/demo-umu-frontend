@@ -335,7 +335,7 @@ async function submitChangePassword() {
   }
   cpSaving.value = true
   try {
-    const tok = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    const tok = typeof localStorage !== 'undefined' ? getToken() : null
     if (!tok) throw new Error('Not signed in')
     await $fetch(`${config.public.apiBase}/auth/change-password`, {
       method: 'POST',
@@ -357,7 +357,7 @@ async function downloadData() {
   if (downloadingData.value) return
   downloadingData.value = true
   try {
-    const tok = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    const tok = typeof localStorage !== 'undefined' ? getToken() : null
     if (!tok) throw new Error('Not signed in')
     const data = await $fetch(`${config.public.apiBase}/profile/export`, {
       headers: { Authorization: `Bearer ${tok}` },
@@ -390,7 +390,7 @@ async function confirmDeleteAccount() {
   deleteError.value = ''
   deletingAccount.value = true
   try {
-    const tok = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    const tok = typeof localStorage !== 'undefined' ? getToken() : null
     if (tok) {
       await $fetch(`${config.public.apiBase}/profile/me`, {
         method: 'DELETE',
@@ -398,7 +398,7 @@ async function confirmDeleteAccount() {
       })
     }
     if (typeof localStorage !== 'undefined') {
-      localStorage.removeItem('token')
+      clearToken()
       localStorage.removeItem('redirectAfterLogin')
       sessionStorage.clear()
     }
@@ -422,7 +422,7 @@ async function setPref(key: keyof typeof prefs, value: boolean) {
   prefs[key] = value
   try {
     const tok =
-      typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+      typeof localStorage !== 'undefined' ? getToken() : null
     if (!tok) return
     await $fetch(`${config.public.apiBase}/profile/me`, {
       method: 'PATCH',

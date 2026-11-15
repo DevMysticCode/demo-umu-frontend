@@ -6,10 +6,12 @@
 // automatically via credentials: 'include' inside useAuth's
 // refreshAccessToken(). Without this plugin, a user mid-session would
 // start getting 401s an hour in with no visible cause. It does two things:
-//   1. On boot, if an access token exists locally (i.e. this browser has
-//      logged in before), proactively swap it for a fresh one — covers the
-//      case where the app was closed for a while and the stored access
-//      token has already expired.
+//   1. On boot, ALWAYS try once, even with nothing in memory yet (security
+//      review finding #7, 2026-11-15 — the access token now lives only in
+//      a module variable, see composables/useAuthToken.ts, so every fresh
+//      load/reload starts empty; the httpOnly cookie, not a leftover
+//      localStorage value, is the real signal that this browser has a
+//      session). A failed attempt just means genuinely signed out.
 //   2. While the app stays open, refreshes again every 45 minutes
 //      (comfortably inside the 1h access-token lifetime) so an active
 //      session never hits the expiry cliff.
@@ -23,15 +25,6 @@ import { useAuth } from '~/composables/useAuth'
 const REFRESH_INTERVAL_MS = 45 * 60 * 1000
 
 export default defineNuxtPlugin(() => {
-  let hasToken = false
-  try {
-    hasToken = !!localStorage.getItem('token')
-  } catch {
-    // Private mode / blocked site data — nothing to keep alive.
-    return
-  }
-  if (!hasToken) return
-
   const { refreshAccessToken } = useAuth()
 
   const tryRefresh = async () => {
@@ -43,7 +36,7 @@ export default defineNuxtPlugin(() => {
       // existing 401 handling takes over cleanly instead of retrying a
       // token we know is invalid.
       try {
-        localStorage.removeItem('token')
+        clearToken()
       } catch {
         // ignore
       }

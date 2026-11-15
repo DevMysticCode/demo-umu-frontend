@@ -27,7 +27,7 @@ export function useCalendar() {
   const isLoading = ref(false)
 
   const getToken = () =>
-    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    typeof window !== 'undefined' ? getToken() : null
 
   const fetchReminders = async (year: number, month: number) => {
     const token = getToken()

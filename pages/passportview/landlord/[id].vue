@@ -2278,7 +2278,7 @@ const generatingTenantShare = ref(false)
 async function loadPassport() {
   loading.value = true
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     // cache: 'no-store' - the response carries an ETag with no
     // Cache-Control, so the browser was silently serving a stale cached
     // copy on every re-call (upload/save a certificate, refresh the
@@ -2702,7 +2702,7 @@ async function loadCoverDocs() {
   const q = drawerUploadQuestion.value
   if (!q) return
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     coverDocs.value = await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
       query: { kind: 'cover-policy' },
       headers: { Authorization: `Bearer ${token}` },
@@ -2720,7 +2720,7 @@ async function onCoverFilePicked(e: Event) {
   coverUploading.value = true
   drawerError.value = ''
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     const fd = new FormData()
     fd.append('file', file)
     fd.append('name', file.name.replace(/\.[^.]+$/, ''))
@@ -2740,7 +2740,7 @@ async function onCoverFilePicked(e: Event) {
 }
 async function removeCoverDoc(docId: string) {
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     await $fetch(`${config.public.apiBase}/questions/copies/${docId}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` },
@@ -2757,7 +2757,7 @@ async function loadWarrantyDocs() {
   const q = drawerUploadQuestion.value
   if (!q) return
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     warrantyDocs.value = await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
       query: { kind: 'warranties' },
       headers: { Authorization: `Bearer ${token}` },
@@ -2775,7 +2775,7 @@ async function onWarrantyFilePicked(e: Event) {
   warrantyUploading.value = true
   drawerError.value = ''
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     const fd = new FormData()
     fd.append('file', file)
     fd.append('name', file.name.replace(/\.[^.]+$/, ''))
@@ -2795,7 +2795,7 @@ async function onWarrantyFilePicked(e: Event) {
 }
 async function removeWarrantyDoc(docId: string) {
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     await $fetch(`${config.public.apiBase}/questions/copies/${docId}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` },
@@ -2816,7 +2816,7 @@ async function saveWhiteGoods() {
   wgSaving.value = true
   drawerError.value = ''
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     const record = {
       appliances: wgAppliances.value,
       howItWorks: wgHowItWorks.value,
@@ -3191,7 +3191,7 @@ async function saveLegAssessment() {
   }
   legSaving.value = true
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     const today = new Date()
     const assessedAt = today.toISOString().slice(0, 10)
     const nextReview = new Date(today)
@@ -3335,7 +3335,7 @@ async function loadBinDocs() {
   const q = drawerUploadQuestion.value
   if (!q) return
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     binDocs.value = await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
       query: { kind: BIN_PHOTO_KIND },
       headers: { Authorization: `Bearer ${token}` },
@@ -3353,7 +3353,7 @@ async function onBinFilePicked(e: Event) {
   binUploading.value = true
   drawerError.value = ''
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     const fd = new FormData()
     fd.append('file', file)
     fd.append('name', file.name.replace(/\.[^.]+$/, ''))
@@ -3373,7 +3373,7 @@ async function onBinFilePicked(e: Event) {
 }
 async function removeBinDoc(docId: string) {
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     await $fetch(`${config.public.apiBase}/questions/copies/${docId}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` },
@@ -3402,7 +3402,7 @@ async function loadRoomPhotoDocs(roomId: string) {
   const q = drawerUploadQuestion.value
   if (!q) return
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     roomPhotoDocs.value[roomId] = await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
       query: { kind: roomPhotoKind(roomId) },
       headers: { Authorization: `Bearer ${token}` },
@@ -3420,7 +3420,7 @@ async function onRoomPhotoPicked(roomId: string, e: Event) {
   roomPhotoUploading.value = roomId
   drawerError.value = ''
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     const fd = new FormData()
     fd.append('file', file)
     fd.append('name', file.name.replace(/\.[^.]+$/, ''))
@@ -3455,7 +3455,7 @@ async function goToInvReview() {
 
 async function removeRoomPhotoDoc(roomId: string, docId: string) {
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     await $fetch(`${config.public.apiBase}/questions/copies/${docId}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` },
@@ -3490,7 +3490,7 @@ async function loadItemPhotoDocs(roomId: string, name: string) {
   if (!q) return
   const key = itemPhotoKey(roomId, name)
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     itemPhotoDocs.value[key] = await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
       query: { kind: itemPhotoKind(roomId, name) },
       headers: { Authorization: `Bearer ${token}` },
@@ -3512,7 +3512,7 @@ async function onItemPhotoPicked(roomId: string, name: string, e: Event) {
   itemPhotoUploading.value = key
   drawerError.value = ''
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     const fd = new FormData()
     fd.append('file', file)
     fd.append('name', file.name.replace(/\.[^.]+$/, ''))
@@ -3532,7 +3532,7 @@ async function onItemPhotoPicked(roomId: string, name: string, e: Event) {
 }
 async function removeItemPhotoDoc(roomId: string, name: string, docId: string) {
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     await $fetch(`${config.public.apiBase}/questions/copies/${docId}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` },
@@ -3755,7 +3755,7 @@ async function saveInventory() {
   }
   invSaving.value = true
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     const record = {
       furnishing: invFurnishing.value,
       type: invType.value,
@@ -3847,7 +3847,7 @@ async function submitInvLandlordSignature() {
   invLandlordSigning.value = true
   drawerError.value = ''
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     // Enriching the record just created in saveInventory() with a
     // signature, not starting a new one - replace the LAST array entry
     // rather than appending.
@@ -3883,7 +3883,7 @@ async function generateInvTenantSignLink() {
   invGeneratingLink.value = true
   drawerError.value = ''
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     const res: any = await $fetch(`${config.public.apiBase}/questions/${dateQ.id}/tenancy-sign-link`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
@@ -3922,7 +3922,7 @@ async function downloadInventoryPdf() {
   // this is called from the send-tenant/signing-status screens, so read
   // straight off the saved record's own room list instead.
   const q = drawerUploadQuestion.value
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  const token = typeof window !== 'undefined' ? getToken() : null
   const fetchKind = async (kind: string) => {
     try {
       return await $fetch<any[]>(`${config.public.apiBase}/questions/${q!.id}/copies`, {
@@ -4204,7 +4204,7 @@ async function saveTenancyAgreement() {
   }
   tnSaving.value = true
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     const record = {
       tenantName: tnTenantName.value,
       startDate: tnStartDate.value,
@@ -4276,7 +4276,7 @@ async function submitLandlordSignature() {
   tnLandlordSigning.value = true
   drawerError.value = ''
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     // Enriching the record just created in saveTenancyAgreement() with a
     // signature, not starting a new one - replace the LAST array entry
     // rather than appending.
@@ -4312,7 +4312,7 @@ async function generateTenantSignLink() {
   tnGeneratingLink.value = true
   drawerError.value = ''
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     const res: any = await $fetch(`${config.public.apiBase}/questions/${dateQ.id}/tenancy-sign-link`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
@@ -4466,7 +4466,7 @@ async function loadCopyDocs() {
   const q = drawerUploadQuestion.value
   if (!q) return
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     copyDocs.value = await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -4488,7 +4488,7 @@ async function onCopyFilePicked(e: Event) {
   copyUploading.value = true
   drawerError.value = ''
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     const fd = new FormData()
     fd.append('file', file)
     fd.append('name', file.name.replace(/\.[^.]+$/, ''))
@@ -4524,7 +4524,7 @@ async function refreshSectionData() {
 
 async function removeCopyDoc(docId: string) {
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     await $fetch(`${config.public.apiBase}/questions/copies/${docId}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` },
@@ -4552,7 +4552,7 @@ async function loadPiCopyDocs() {
   const q = drawerUploadQuestion.value
   if (!q) return
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     piCopyDocs.value = await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
       query: { kind: 'pi' },
       headers: { Authorization: `Bearer ${token}` },
@@ -4571,7 +4571,7 @@ async function onPiCopyFilePicked(e: Event) {
   piCopyUploading.value = true
   drawerError.value = ''
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     const fd = new FormData()
     fd.append('file', file)
     fd.append('name', file.name.replace(/\.[^.]+$/, ''))
@@ -4592,7 +4592,7 @@ async function onPiCopyFilePicked(e: Event) {
 
 async function removePiCopyDoc(docId: string) {
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     await $fetch(`${config.public.apiBase}/questions/copies/${docId}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` },
@@ -4622,7 +4622,7 @@ async function loadRtrOccDocs(i: number) {
   const q = drawerUploadQuestion.value
   if (!q) return
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     rtrOccDocs.value[i] = await $fetch(`${config.public.apiBase}/questions/${q.id}/copies`, {
       query: { kind: rtrOccKind(i) },
       headers: { Authorization: `Bearer ${token}` },
@@ -4643,7 +4643,7 @@ async function onRtrOccFilePicked(i: number, e: Event) {
   rtrOccUploading.value = i
   drawerError.value = ''
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     const fd = new FormData()
     fd.append('file', file)
     fd.append('name', file.name.replace(/\.[^.]+$/, ''))
@@ -4663,7 +4663,7 @@ async function onRtrOccFilePicked(i: number, e: Event) {
 }
 async function removeRtrOccDoc(i: number, docId: string) {
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     await $fetch(`${config.public.apiBase}/questions/copies/${docId}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` },
@@ -4692,7 +4692,7 @@ async function saveMultiCopyExpiry() {
   drawerListSaving.value = true
   drawerError.value = ''
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     const authHeaders = { Authorization: `Bearer ${token}` }
     if (drawerExpiryDraft.value && drawerDateQuestion.value) {
       await $fetch(`${config.public.apiBase}/questions/${drawerDateQuestion.value.id}/answer`, {
@@ -4777,7 +4777,7 @@ const alarmEvidenceUploading = ref<Record<string, boolean>>({})
 async function loadAllAlarmRowDocs() {
   const q = drawerUploadQuestion.value
   if (!q) return
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  const token = typeof window !== 'undefined' ? getToken() : null
   const entries = await Promise.all(
     alarmRows.value.map(async (row) => {
       try {
@@ -4802,7 +4802,7 @@ async function onAlarmRowFilePicked(e: Event, rid: string) {
   alarmEvidenceUploading.value = { ...alarmEvidenceUploading.value, [rid]: true }
   drawerError.value = ''
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     const fd = new FormData()
     fd.append('file', file)
     fd.append('name', file.name.replace(/\.[^.]+$/, ''))
@@ -4822,7 +4822,7 @@ async function onAlarmRowFilePicked(e: Event, rid: string) {
 }
 async function removeAlarmRowDoc(docId: string) {
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     await $fetch(`${config.public.apiBase}/questions/copies/${docId}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` },
@@ -4854,7 +4854,7 @@ async function saveDrawerList() {
   drawerListSaving.value = true
   drawerError.value = ''
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     const value = isAlarmsSection.value ? alarmRows.value : occupierRows.value
     await $fetch(`${config.public.apiBase}/questions/${q.id}/answer`, {
       method: 'POST',
@@ -4939,7 +4939,7 @@ async function saveDrawerForm() {
   drawerUploading.value = true
   drawerError.value = ''
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     const fd = new FormData()
     fd.append('file', pendingFile.value)
     if (drawerDocName.value) fd.append('name', drawerDocName.value)
@@ -5043,7 +5043,7 @@ async function generateTenantShare() {
   generatingTenantShare.value = true
   tenantShareError.value = ''
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     const result = await $fetch<{ url: string }>(
       `${config.public.apiBase}/passport/${passportId.value}/share`,
       {

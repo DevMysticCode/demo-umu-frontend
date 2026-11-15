@@ -712,7 +712,7 @@ async function onDocFileChosen(e: Event) {
   uploading.value = kind
   try {
     const token =
-      typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+      typeof localStorage !== 'undefined' ? getToken() : null
     if (!token) throw new Error('Not signed in')
     const form = new FormData()
     form.append('file', file)

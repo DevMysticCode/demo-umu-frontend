@@ -1650,7 +1650,7 @@ async function onFundsFileChosen(e: Event) {
   try {
     const config = useRuntimeConfig()
     const token =
-      typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+      typeof localStorage !== 'undefined' ? getToken() : null
     const kind = id === 'mortgage' ? 'mortgage' : 'funds'
     const form = new FormData()
     form.append('file', file)
@@ -1902,7 +1902,7 @@ async function onAiDraft() {
   try {
     const config = useRuntimeConfig()
     const token =
-      typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+      typeof localStorage !== 'undefined' ? getToken() : null
     // Dedicated endpoint, not the general /chat assistant — that endpoint
     // requires a single `message` string (this used to send an OpenAI-style
     // `messages` array, which failed its validation with a 400 before ever

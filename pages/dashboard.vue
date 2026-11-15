@@ -1116,7 +1116,7 @@ async function fetchForYou(token: string) {
 // since this can fire long after mount.
 function refetchForYou() {
   const token =
-    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    typeof localStorage !== 'undefined' ? getToken() : null
   if (token) fetchForYou(token)
 }
 
@@ -1173,7 +1173,7 @@ onMounted(async () => {
 
   if (!profile.value) await fetchProfile()
   const token =
-    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    typeof window !== 'undefined' ? getToken() : null
   if (!token) return
 
   // Every real role (sell/buy/both/landlord) now has dashboard content,

@@ -172,7 +172,7 @@ const ROLE_COPY: Record<string, { title: string; body: string }> = {
   },
 }
 function hasToken(): boolean {
-  return typeof localStorage !== 'undefined' && !!localStorage.getItem('token')
+  return typeof localStorage !== 'undefined' && !!getToken()
 }
 function onCardClick(card: { key: string; status: string }) {
   if (card.status === 'soon') return

@@ -18,7 +18,7 @@ let cachedId: string | null = null
 
 function readMyId(): string | null {
   if (typeof window === 'undefined') return null
-  const token = localStorage.getItem('token')
+  const token = getToken()
   if (!token) {
     cachedToken = null
     cachedId = null

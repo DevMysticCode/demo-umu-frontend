@@ -392,7 +392,7 @@ function handleInput(val: string) {
   }
   searchTimer = setTimeout(async () => {
     try {
-      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+      const token = typeof window !== 'undefined' ? getToken() : null
       // Lightweight mode hits a dedicated AREA-suggestion endpoint (distinct
       // city/county groupings), not /property/search — the dropdown should
       // read as "where do you want to search", never a preview of actual

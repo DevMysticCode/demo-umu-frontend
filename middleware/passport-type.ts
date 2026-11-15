@@ -8,7 +8,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const id = to.params.id
   if (!id || to.path.startsWith('/passportview/landlord/')) return
 
-  const token = localStorage.getItem('token')
+  const token = getToken()
   if (!token) return
 
   // Cheap cache: the passport type never changes, so remember it per id

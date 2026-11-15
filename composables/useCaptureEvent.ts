@@ -27,7 +27,7 @@ export const useCaptureEvent = () => {
   const send = async (payload: CaptureEventPayload) => {
     const headers: Record<string, string> = {}
     if (import.meta.client) {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       if (token) headers.Authorization = `Bearer ${token}`
     }
     try {

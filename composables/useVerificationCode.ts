@@ -97,7 +97,7 @@ export const useVerificationCode = () => {
           ...(postcode ? { postcode } : {}),
           password,
         })
-        localStorage.setItem('token', regRes.token)
+        setToken(regRes.token)
         setSessionFlag()
         sessionStorage.removeItem('umu-pending-email')
         // OTP-driven signup completes here too — flush any cached push

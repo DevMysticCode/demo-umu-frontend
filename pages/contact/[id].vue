@@ -149,7 +149,7 @@ const sendMessage = async () => {
   errorMsg.value = ''
   sending.value = true
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     await $fetch(
       `${config.public.apiBase}/property/${propertyId}/tap-owner`,
       {

@@ -96,7 +96,7 @@ onMounted(() => {
   // first: total delay = fetch time + 2.4s, not max(fetch time, 2.4s)).
   ;(async () => {
     try {
-      const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+      const token = typeof localStorage !== 'undefined' ? getToken() : null
       if (token) {
         profile.value = await $fetch(`${config.public.apiBase}/profile/me`, {
           headers: { Authorization: `Bearer ${token}` },

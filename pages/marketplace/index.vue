@@ -255,7 +255,7 @@ const greeting = computed(() => {
 // Stats are auth-only. For logged-out browsers we show zeros so the
 // hero card still renders without a flash of mock numbers.
 const isAuthed = computed(() =>
-  typeof window !== 'undefined' && !!localStorage.getItem('token'),
+  typeof window !== 'undefined' && !!getToken(),
 )
 const { data: statsData } = await useAsyncData(
   'mp-me-stats',

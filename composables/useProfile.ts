@@ -9,7 +9,7 @@ function resolveAvatarUrl(
 
 function getAuthHeaders() {
   const token =
-    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    typeof window !== 'undefined' ? getToken() : null
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
 

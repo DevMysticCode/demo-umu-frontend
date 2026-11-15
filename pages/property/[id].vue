@@ -6018,7 +6018,7 @@ async function persistWatch(
   opts: { silent?: boolean } = {},
 ): Promise<'unauthenticated' | 'ok'> {
   const token =
-    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    typeof localStorage !== 'undefined' ? getToken() : null
   if (!token) {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem(
@@ -6072,7 +6072,7 @@ const passportEcosystemOpen = ref(false)
 
 async function postWatchPrefs(prefs: Record<string, boolean>) {
   const token =
-    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    typeof localStorage !== 'undefined' ? getToken() : null
   if (!token) return
   try {
     await fetch(`${config.public.apiBase}/property/${propertyId}/watch`, {
@@ -7293,7 +7293,7 @@ async function submitWatch() {
   watchSubmitting.value = true
   try {
     const token =
-      typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+      typeof localStorage !== 'undefined' ? getToken() : null
     // POST to the existing /register-interest endpoint (used by the legacy
     // RegisterInterestContent). Guests can submit too — the endpoint accepts
     // an unauthenticated body with name + email.
@@ -7340,7 +7340,7 @@ async function submitOwnerContact() {
     return
   }
   const token =
-    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    typeof localStorage !== 'undefined' ? getToken() : null
   // The /tap-owner endpoint requires JWT — auth-gate guests with a
   // redirect back to this page so they can resume the conversation.
   if (!token) {
@@ -7713,19 +7713,17 @@ const mapEl = ref<HTMLElement | null>(null)
 let mapInstance: any = null
 let mapInitialised = false
 
+// Security/launch review finding #12 (2026-11-14): self-hosted via
+// npm/Vite instead of unpkg — see SearchDrawer.vue's loadLeaflet for why.
 const loadLeaflet = (): Promise<any> =>
   new Promise((resolve) => {
     if ((window as any).L) return resolve((window as any).L)
-    if (!document.querySelector('link[href*="leaflet"]')) {
-      const link = document.createElement('link')
-      link.rel = 'stylesheet'
-      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
-      document.head.appendChild(link)
-    }
-    const script = document.createElement('script')
-    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
-    script.onload = () => resolve((window as any).L)
-    document.head.appendChild(script)
+    import('leaflet/dist/leaflet.css')
+    import('leaflet').then((mod) => {
+      const L = (mod as any).default ?? mod
+      ;(window as any).L = L
+      resolve(L)
+    })
   })
 
 async function initMap() {
@@ -8080,11 +8078,11 @@ onMounted(async () => {
       // guests have no user row to attach this to.
       if (
         typeof localStorage !== 'undefined' &&
-        localStorage.getItem('token')
+        getToken()
       ) {
         fetch(`${apiBase}/property/${propertyId}/record-view`, {
           method: 'POST',
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          headers: { Authorization: `Bearer ${getToken()}` },
         }).catch(() => {})
       }
     }
@@ -8098,7 +8096,7 @@ onMounted(async () => {
     // for them regardless of the real status — that's an existing,
     // separate limitation, not a fetch failure worth retrying.
     const hasToken =
-      typeof localStorage !== 'undefined' && !!localStorage.getItem('token')
+      typeof localStorage !== 'undefined' && !!getToken()
     if (hasToken && statusData === null) {
       // A couple of retries with a short, growing gap rather than one
       // immediate retry - an instant retry just hits the same not-yet-
@@ -8184,7 +8182,7 @@ onMounted(async () => {
 
   // Enrichment (non-blocking)
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     const res = await fetch(`${apiBase}/property/${propertyId}/enrichment`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     })
@@ -8206,7 +8204,7 @@ onMounted(async () => {
       }
     }
 
-    const token = localStorage.getItem('token')
+    const token = getToken()
     if (token && !homeScore.value) {
       const hsRes = await fetch(`${apiBase}/property/${propertyId}/homescore`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -8282,7 +8280,7 @@ function onClaimCtaClick() {
 // same as a logged-out user landing on Discover's search would.
 function goBack() {
   const isAuthed =
-    typeof localStorage !== 'undefined' && !!localStorage.getItem('token')
+    typeof localStorage !== 'undefined' && !!getToken()
   navigateTo(isAuthed ? '/dashboard?focusSearch=1' : '/discover')
 }
 

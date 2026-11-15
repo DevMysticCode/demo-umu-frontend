@@ -253,7 +253,7 @@ export function useMarketplace() {
   const BASE_URL = config.public.apiBase
 
   const getToken = () =>
-    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    typeof window !== 'undefined' ? getToken() : null
   const authHeaders = () => {
     const t = getToken()
     return t ? { Authorization: `Bearer ${t}` } : {}

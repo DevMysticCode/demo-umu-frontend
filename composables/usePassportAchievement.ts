@@ -43,13 +43,13 @@ const balanceAfter = ref(0)
 const checking = ref(false)
 
 function authHeaders() {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  const token = typeof window !== 'undefined' ? getToken() : null
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
 
 async function checkForCelebrations() {
   if (typeof window === 'undefined') return
-  const token = localStorage.getItem('token')
+  const token = getToken()
   if (!token) return
   if (checking.value || visible.value) return
   checking.value = true

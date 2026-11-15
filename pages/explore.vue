@@ -1837,7 +1837,7 @@ function buildForYouUrl(): string {
   return `${config.public.apiBase}/property/for-you${qs ? `?${qs}` : ''}`
 }
 async function refreshForYou() {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  const token = typeof window !== 'undefined' ? getToken() : null
   if (!token) return
   try {
     const res = await $fetch<{ items: any[]; needsPostcode?: boolean }>(buildForYouUrl(), {
@@ -1866,7 +1866,7 @@ function startClaimFlow() {
 onMounted(async () => {
   if (!profile.value) await fetchProfile()
   const token =
-    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    typeof window !== 'undefined' ? getToken() : null
   if (!token) return
 
   // Apply cached role immediately after hydration (before API responds)

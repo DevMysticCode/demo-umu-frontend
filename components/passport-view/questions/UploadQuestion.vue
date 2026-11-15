@@ -71,7 +71,7 @@ const handleFileSelect = async (event) => {
   uploadError.value = ''
 
   const questionId = props.question?.id
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  const token = typeof window !== 'undefined' ? getToken() : null
   const results = []
 
   for (const file of files) {

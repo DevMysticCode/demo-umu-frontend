@@ -207,7 +207,7 @@ let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
 async function fetchPage(q: string, offset: number) {
   const token =
-    typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    typeof window !== 'undefined' ? getToken() : null
   const res = await $fetch<any>(
     `${config.public.apiBase}/property/search?q=${encodeURIComponent(q)}&offset=${offset}&limit=${PAGE_SIZE}`,
     token ? { headers: { Authorization: `Bearer ${token}` } } : {},

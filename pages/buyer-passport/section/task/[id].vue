@@ -398,7 +398,7 @@ const activeHelpContent = ref<any>(null)
 
 onMounted(async () => {
   try {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    const token = typeof window !== 'undefined' ? getToken() : null
     allData.value = await $fetch(`${config.public.apiBase}/passport/${passportId}/buyer-view`, {
       headers: { Authorization: `Bearer ${token}` },
     })

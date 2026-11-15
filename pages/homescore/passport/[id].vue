@@ -622,7 +622,7 @@ const authPromptOpen = ref(false)
 
 function onClaimClick() {
   const token =
-    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    typeof localStorage !== 'undefined' ? getToken() : null
   if (token) {
     router.push(`/claim/${propertyId.value}`)
     return

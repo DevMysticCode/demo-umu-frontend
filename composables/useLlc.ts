@@ -47,7 +47,7 @@ export const useLlc = () => {
   const headers = () => {
     const h: Record<string, string> = {}
     if (import.meta.client) {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       if (token) h.Authorization = `Bearer ${token}`
     }
     return h

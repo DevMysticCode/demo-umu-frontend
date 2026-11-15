@@ -508,19 +508,21 @@ const applyFilters = (filters: any) => {
 }
 
 // ── Map ──────────────────────────────────────────────────────────────────────
+// Security/launch review finding #12 (2026-11-14): Leaflet used to load
+// from unpkg at runtime with no integrity check — a supply-chain risk,
+// since a compromised CDN response would run with this page's full
+// privileges. Self-hosted via npm/Vite instead: bundled, hash-verified at
+// install time, and code-split into its own chunk so it's still only
+// fetched when the map is actually opened, same as before.
 const loadLeaflet = (): Promise<any> =>
   new Promise((resolve) => {
     if ((window as any).L) return resolve((window as any).L)
-    if (!document.querySelector('link[href*="leaflet"]')) {
-      const link = document.createElement('link')
-      link.rel = 'stylesheet'
-      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
-      document.head.appendChild(link)
-    }
-    const script = document.createElement('script')
-    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
-    script.onload = () => resolve((window as any).L)
-    document.head.appendChild(script)
+    import('leaflet/dist/leaflet.css')
+    import('leaflet').then((mod) => {
+      const L = (mod as any).default ?? mod
+      ;(window as any).L = L
+      resolve(L)
+    })
   })
 
 const switchToMap = async () => {

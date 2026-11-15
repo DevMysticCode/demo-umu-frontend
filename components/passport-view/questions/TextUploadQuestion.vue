@@ -361,7 +361,7 @@ const handleFileSelect = async (event) => {
   // the file, but on the endpoint that only returns a URL rather than
   // overwriting the parent's whole answer with this one part.
   const endpoint = props.question?.uploadOnly ? 'upload-part' : 'upload'
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  const token = typeof window !== 'undefined' ? getToken() : null
 
   uploading.value = true
   uploadError.value = ''

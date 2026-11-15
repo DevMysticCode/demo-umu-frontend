@@ -1219,7 +1219,7 @@ const config = useRuntimeConfig()
 // when the user has a published buyer profile. Lazily fetched.
 const { profile: userProfile, fetchProfile } = useProfile()
 onMounted(() => {
-  if (typeof localStorage !== 'undefined' && localStorage.getItem('token')) {
+  if (typeof localStorage !== 'undefined' && getToken()) {
     if (!userProfile.value) fetchProfile().catch(() => {})
   }
 })
@@ -1227,7 +1227,7 @@ onMounted(() => {
 // BuyerVerifyCard handlers — same routing as the buyer-results screen.
 function onBuyerStartVerification() {
   const tk =
-    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    typeof localStorage !== 'undefined' ? getToken() : null
   if (!tk) {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem('redirectAfterLogin', '/buyer-profile')
@@ -1291,7 +1291,7 @@ onMounted(async () => {
   // detail page does, so we get identical results.
   try {
     const token =
-      typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+      typeof localStorage !== 'undefined' ? getToken() : null
     const res = await fetch(
       `${config.public.apiBase}/property/${propertyId.value}/enrichment`,
       { headers: token ? { Authorization: `Bearer ${token}` } : {} },
@@ -1317,7 +1317,7 @@ onMounted(async () => {
   // (Unclaimed / In progress / Published).
   try {
     const token =
-      typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+      typeof localStorage !== 'undefined' ? getToken() : null
     const res = await fetch(
       `${config.public.apiBase}/property/${propertyId.value}/passport-status`,
       { headers: token ? { Authorization: `Bearer ${token}` } : {} },
@@ -2076,7 +2076,7 @@ const confidenceTitle = computed(() => {
 function goToClaimPassport() {
   const target = `/property/${propertyId.value}?claim=1`
   const token =
-    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    typeof localStorage !== 'undefined' ? getToken() : null
   if (!token) {
     try { localStorage.setItem('redirectAfterLogin', target) } catch {}
     router.push('/onboarding/signin')
@@ -2100,7 +2100,7 @@ function onPassportPillClick() {
 function goToBuyPassport() {
   const target = `/property/${propertyId.value}?unlock=1`
   const token =
-    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    typeof localStorage !== 'undefined' ? getToken() : null
   if (!token) {
     try { localStorage.setItem('redirectAfterLogin', target) } catch {}
     router.push('/onboarding/signin')
@@ -2119,7 +2119,7 @@ function onVerifyStart() {
   verifyDrawerOpen.value = false
   const target = '/buyer-profile/build'
   const token =
-    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    typeof localStorage !== 'undefined' ? getToken() : null
   if (!token) {
     try {
       localStorage.setItem('redirectAfterLogin', target)
@@ -2150,7 +2150,7 @@ async function onWatchSubmit(prefs: Record<string, boolean>) {
   // through that round-trip (pre-existing limitation), same as elsewhere.
   const target = `/property/${propertyId.value}?watched=1`
   const token =
-    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    typeof localStorage !== 'undefined' ? getToken() : null
   if (!token) {
     try {
       localStorage.setItem('redirectAfterLogin', target)
@@ -2177,7 +2177,7 @@ function goToBuildBuyerPassport() {
   watchConfirmedOpen.value = false
   const target = '/buyer-profile/build'
   const token =
-    typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null
+    typeof localStorage !== 'undefined' ? getToken() : null
   if (!token) {
     try { localStorage.setItem('redirectAfterLogin', target) } catch {}
     router.push('/onboarding/signin')

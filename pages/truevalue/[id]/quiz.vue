@@ -199,7 +199,7 @@ const epcStatus = ref<'current' | 'stale' | 'none' | null>(null)
 const liveEstimate = ref<any>(null)
 
 function token() {
-  return typeof window !== 'undefined' ? localStorage.getItem('token') : null
+  return typeof window !== 'undefined' ? getToken() : null
 }
 const isSignedIn = computed(() => !!token())
 

@@ -33,7 +33,7 @@ export const useVault = () => {
   const base = config.public.apiBase
 
   const getHeaders = () => {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     return token ? { Authorization: `Bearer ${token}` } : {}
   }
 
