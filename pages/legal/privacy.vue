@@ -98,21 +98,25 @@
             viewing a property, to provide geocoding and address-lookup results</li>
           <li>HM Land Registry: source of public property price and transaction data used to enrich
             property records; this is public property data, not personal data about you</li>
-          <li>AWS (Amazon Web Services), Railway and Vercel: host our infrastructure (application
-            servers, database, file storage and the website itself) and by necessity process any
-            personal data passing through or stored in the service</li>
+          <li>Railway: hosts our live application servers, database and file storage today — this is
+            where your account and property data actually live</li>
+          <li>AWS (Amazon Web Services): a separate infrastructure environment we are setting up for a
+            future migration; it does not currently hold any live customer data</li>
+          <li>Vercel: hosts the website itself</li>
           <li>Legal or regulatory authorities: information required by law or court order</li>
         </ul>
 
         <h2>06 · International transfers</h2>
         <p>
-          Our AWS infrastructure runs in the UK (London, eu-west-2), so data held there stays in the
-          UK. Several of the providers above — Persona, Groq, Resend, Sentry, Mapbox and Vercel — are
-          based outside the UK/EEA, principally in the United States, and may process data there as
-          part of providing their service. Where that happens, UK GDPR requires an appropriate
-          safeguard (such as the UK's International Data Transfer Addendum or Standard Contractual
-          Clauses) to be in place. We are in the process of confirming and documenting the specific
-          safeguard used with each provider; this section will be updated as that review completes.
+          Railway, which hosts your account and property data today, runs in the United States. Along
+          with several of the providers above — Persona, Groq, Resend, Sentry and Mapbox, also
+          principally US-based — this means personal data is processed outside the UK/EEA as part of
+          providing the service. UK GDPR requires an appropriate safeguard (such as the UK's
+          International Data Transfer Addendum or Standard Contractual Clauses) to be in place for
+          this. We are in the process of confirming and documenting the specific safeguard used with
+          each provider, including Railway; this section will be updated as that review completes. If
+          we complete the planned migration to AWS's UK (London) region, this section will be updated
+          to reflect that change.
         </p>
 
         <h2>07 · How long we keep your information</h2>
