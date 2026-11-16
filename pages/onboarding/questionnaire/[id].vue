@@ -229,13 +229,10 @@ const handleContinue = async () => {
   }
 }
 
-// Set page meta if available
-if (typeof definePageMeta === 'function') {
-  definePageMeta({
-    title: 'Questionnaire - UmovingU',
-    middleware: 'auth',
-  })
-}
+definePageMeta({
+  title: 'Questionnaire - UmovingU',
+  middleware: 'auth',
+})
 </script>
 
 <style scoped>
