@@ -252,8 +252,13 @@ export function useMarketplace() {
   const config = useRuntimeConfig()
   const BASE_URL = config.public.apiBase
 
-  const getToken = () =>
-    typeof window !== 'undefined' ? getToken() : null
+  // Bug fix (2026-11-16): this used to shadow the real auto-imported
+  // getToken() from useAuthToken.ts with a same-named local that called
+  // itself - infinite recursion, crashing every authenticated
+  // marketplace call (post job, offer, accept/decline, authorize/
+  // confirm/release payment, messaging) with a stack overflow. The
+  // global getToken() is already SSR-safe (just reads an in-memory
+  // variable, no window access), so there's nothing to re-guard here.
   const authHeaders = () => {
     const t = getToken()
     return t ? { Authorization: `Bearer ${t}` } : {}
