@@ -87,8 +87,13 @@ export const useAuth = () => {
       // Ignore - local state is still cleared below.
     } finally {
       clearToken()
-      // Stale key from before refresh tokens moved to an httpOnly cookie -
-      // harmless to leave, but nothing should still be writing it.
+      // Stale keys from before the access token moved to in-memory storage
+      // and the refresh token moved to an httpOnly cookie - harmless to
+      // remove defensively, nothing should still be writing them, but a
+      // pre-migration value left over in a browser's localStorage would
+      // otherwise silently authenticate requests forever (same gap found
+      // and fixed on umu-website-integration/umu-website-new's useAuth.ts).
+      localStorage.removeItem('token')
       localStorage.removeItem('refreshToken')
       clearSessionFlag()
     }

@@ -25,10 +25,22 @@ const { consent, accept, rejectNonEssential } = useCookieConsent()
 
 <style scoped>
 .ccb-banner {
+  /* Constrained to the app's own mobile column (.max-w-app, 28rem) and
+     centred the same way components/core/BottomNav.vue centres itself -
+     without this it spans the full viewport edge-to-edge on anything
+     wider than a phone, disconnected from the rest of the UI. The extra
+     safe-area-inset-bottom offset (same pattern used in 79+ other files
+     in this repo, e.g. BottomNav.vue's .bottom-nav-safe) keeps it clear
+     of the iPhone home-indicator / Android gesture-bar area, where a
+     plain `bottom: 16px` can leave taps landing in a system-reserved
+     zone that silently swallows them. */
   position: fixed;
   left: 16px;
   right: 16px;
-  bottom: 16px;
+  max-width: calc(28rem - 32px);
+  margin-left: auto;
+  margin-right: auto;
+  bottom: calc(16px + env(safe-area-inset-bottom));
   z-index: 2000;
   display: flex;
   flex-wrap: wrap;
