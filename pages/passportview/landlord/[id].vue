@@ -1777,10 +1777,17 @@
             </template>
             <template v-else>
               <p class="lp-modal-hint" style="margin-top:0;margin-bottom:14px">Share this link with your tenant. No account needed - they'll review the inventory (including any evidence photos) and sign with a drawn signature.</p>
-              <div v-if="invGeneratingLink" class="lp-modal-hint">Generating link…</div>
-              <template v-else-if="invTenantLinkUrl">
+              <template v-if="invTenantLinkUrl">
                 <div class="lp-tn-linkbox">{{ invTenantLinkUrl }}</div>
                 <button type="button" class="btn-primary" style="width:100%;margin-top:12px" @click="copyInvTenantSignLink">Copy link</button>
+              </template>
+              <template v-else>
+                <div class="mform-label">Tenant's email</div>
+                <input v-model="invTenantEmail" type="email" class="mform-input" placeholder="tenant@example.com" aria-label="Tenant's email" />
+                <p class="lp-modal-hint" style="margin-top:6px;margin-bottom:0">We'll send a one-time code to this address to confirm it's really them before their signature is recorded.</p>
+                <button type="button" class="btn-primary" style="width:100%;margin-top:12px" :disabled="invGeneratingLink || !isValidEmail(invTenantEmail)" @click="generateInvTenantSignLink">
+                  {{ invGeneratingLink ? 'Generating link…' : 'Generate link' }}
+                </button>
               </template>
               <button type="button" class="btn-secondary" style="width:100%;margin-top:8px" :disabled="invPdfGenerating" @click="downloadInventoryPdf">
                 {{ invPdfGenerating ? 'Preparing PDF…' : 'Download PDF instead' }}
@@ -2080,10 +2087,17 @@
             </template>
             <template v-else>
               <p class="lp-modal-hint" style="margin-top:0;margin-bottom:14px">Share this link with your tenant. No account needed - they'll review the agreement and sign with a drawn signature.</p>
-              <div v-if="tnGeneratingLink" class="lp-modal-hint">Generating link…</div>
-              <template v-else-if="tnTenantLinkUrl">
+              <template v-if="tnTenantLinkUrl">
                 <div class="lp-tn-linkbox">{{ tnTenantLinkUrl }}</div>
                 <button type="button" class="btn-primary" style="width:100%;margin-top:12px" @click="copyTenantSignLink">Copy link</button>
+              </template>
+              <template v-else>
+                <div class="mform-label">Tenant's email</div>
+                <input v-model="tnTenantEmail" type="email" class="mform-input" placeholder="tenant@example.com" aria-label="Tenant's email" />
+                <p class="lp-modal-hint" style="margin-top:6px;margin-bottom:0">We'll send a one-time code to this address to confirm it's really them before their signature is recorded.</p>
+                <button type="button" class="btn-primary" style="width:100%;margin-top:12px" :disabled="tnGeneratingLink || !isValidEmail(tnTenantEmail)" @click="generateTenantSignLink">
+                  {{ tnGeneratingLink ? 'Generating link…' : 'Generate link' }}
+                </button>
               </template>
             </template>
             <p v-if="drawerError" class="lp-modal-error">{{ drawerError }}</p>
@@ -3660,6 +3674,7 @@ function openInvWizard() {
   invLandlordName.value = ''
   invLandlordConsent.value = false
   invTenantLinkUrl.value = ''
+  invTenantEmail.value = ''
 }
 // Seeds the room/item structure from the check-in baseline rather than a
 // blank template, so a check-out is a re-inspection of the SAME rooms
@@ -3709,6 +3724,7 @@ function openInvCheckout() {
   invLandlordName.value = ''
   invLandlordConsent.value = false
   invTenantLinkUrl.value = ''
+  invTenantEmail.value = ''
   invScreen.value = 'rooms'
   invOpen.value = true
 }
@@ -3819,17 +3835,26 @@ const invLandlordConsent = ref(false)
 const invLandlordSigning = ref(false)
 const invTenantLinkUrl = ref('')
 const invGeneratingLink = ref(false)
+const invTenantEmail = ref('')
+
+// Mirrors the backend's own validation (question.service.ts) closely
+// enough to catch obvious typos client-side before the round trip.
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
+}
 
 const invLandlordSigned = computed(() => !!invSavedRecord.value?.audit?.landlord)
 const invTenantSigned = computed(() => !!invSavedRecord.value?.audit?.tenant)
 
+// Backend now requires a tenant email to create a signing link, so the
+// link can no longer be auto-generated the moment this screen is reached -
+// the landlord enters an email first (see generateInvTenantSignLink).
 function openInvNextStep() {
   if (!invLandlordSigned.value) {
     invLandlordConsent.value = false
     invScreen.value = 'landlord-sign'
   } else {
     invScreen.value = 'send-tenant'
-    if (!invTenantSigned.value && !invTenantLinkUrl.value) generateInvTenantSignLink()
   }
 }
 
@@ -3869,7 +3894,6 @@ async function submitInvLandlordSignature() {
     })
     await loadPassport()
     invScreen.value = 'send-tenant'
-    await generateInvTenantSignLink()
   } catch (err: any) {
     drawerError.value = err?.data?.message ?? 'Save failed'
   } finally {
@@ -3879,7 +3903,7 @@ async function submitInvLandlordSignature() {
 
 async function generateInvTenantSignLink() {
   const dateQ = invDateQuestion()
-  if (!dateQ) return
+  if (!dateQ || !isValidEmail(invTenantEmail.value)) return
   invGeneratingLink.value = true
   drawerError.value = ''
   try {
@@ -3887,7 +3911,7 @@ async function generateInvTenantSignLink() {
     const res: any = await $fetch(`${config.public.apiBase}/questions/${dateQ.id}/tenancy-sign-link`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
-      body: { kind: 'inventory' },
+      body: { kind: 'inventory', tenantEmail: invTenantEmail.value.trim() },
     })
     invTenantLinkUrl.value = res.url
   } catch (err: any) {
@@ -4189,6 +4213,7 @@ function openTnWizard() {
   tnLandlordName.value = ''
   tnLandlordConsent.value = false
   tnTenantLinkUrl.value = ''
+  tnTenantEmail.value = ''
   tnScreen.value = 'intro'
   tnOpen.value = true
 }
@@ -4247,10 +4272,14 @@ const tnLandlordConsent = ref(false)
 const tnLandlordSigning = ref(false)
 const tnTenantLinkUrl = ref('')
 const tnGeneratingLink = ref(false)
+const tnTenantEmail = ref('')
 
 const tnLandlordSigned = computed(() => !!tnSavedRecord.value?.audit?.landlord)
 const tnTenantSigned = computed(() => !!tnSavedRecord.value?.audit?.tenant)
 
+// Backend now requires a tenant email to create a signing link, so the
+// link can no longer be auto-generated the moment this screen is reached -
+// the landlord enters an email first (see generateTenantSignLink).
 function openTnNextStep() {
   if (!tnLandlordSigned.value) {
     tnLandlordName.value = tnSavedRecord.value?.tenantName ? '' : ''
@@ -4258,7 +4287,6 @@ function openTnNextStep() {
     tnScreen.value = 'landlord-sign'
   } else {
     tnScreen.value = 'send-tenant'
-    if (!tnTenantSigned.value && !tnTenantLinkUrl.value) generateTenantSignLink()
   }
 }
 
@@ -4298,7 +4326,6 @@ async function submitLandlordSignature() {
     })
     await loadPassport()
     tnScreen.value = 'send-tenant'
-    await generateTenantSignLink()
   } catch (err: any) {
     drawerError.value = err?.data?.message ?? 'Save failed'
   } finally {
@@ -4308,7 +4335,7 @@ async function submitLandlordSignature() {
 
 async function generateTenantSignLink() {
   const dateQ = tnAstQuestion()
-  if (!dateQ) return
+  if (!dateQ || !isValidEmail(tnTenantEmail.value)) return
   tnGeneratingLink.value = true
   drawerError.value = ''
   try {
@@ -4316,6 +4343,7 @@ async function generateTenantSignLink() {
     const res: any = await $fetch(`${config.public.apiBase}/questions/${dateQ.id}/tenancy-sign-link`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
+      body: { kind: 'tenancy', tenantEmail: tnTenantEmail.value.trim() },
     })
     tnTenantLinkUrl.value = res.url
   } catch (err: any) {

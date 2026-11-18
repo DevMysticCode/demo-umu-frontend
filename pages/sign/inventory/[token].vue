@@ -69,7 +69,7 @@
           </template>
         </div>
 
-        <div class="sg-signblock">
+        <div class="sg-signblock" v-if="!otpRequested">
           <div class="mform-label">Your full name</div>
           <input v-model="signerName" type="text" class="mform-input" placeholder="e.g. Jordan Reeves"  aria-label="e.g. Jordan Reeves" />
 
@@ -81,10 +81,29 @@
             <span>I, {{ signerName || 'the undersigned' }}, agree this is my signature and confirm this inventory record is accurate to the best of my knowledge.</span>
           </label>
 
+          <p v-if="otpError" class="sg-err">{{ otpError }}</p>
+
+          <button type="button" class="btn-primary" style="width:100%" :disabled="!canSubmit || otpSending" @click="onRequestOtp">
+            {{ otpSending ? 'Sending code…' : 'Sign inventory' }}
+          </button>
+        </div>
+
+        <div class="sg-signblock" v-else>
+          <div class="sg-otp-head">
+            <div class="sg-otp-title">Enter your verification code</div>
+            <div class="sg-otp-sub">We've sent a 6-digit code to your email to confirm it's really you before recording this signature.</div>
+          </div>
+
+          <CodeInput v-model="otpCode" />
+
           <p v-if="submitError" class="sg-err">{{ submitError }}</p>
 
-          <button type="button" class="btn-primary" style="width:100%" :disabled="!canSubmit || submitting" @click="onSubmit">
-            {{ submitting ? 'Signing…' : 'Sign inventory' }}
+          <button type="button" class="btn-primary" style="width:100%" :disabled="otpCode.length !== 6 || submitting" @click="onSubmit">
+            {{ submitting ? 'Signing…' : 'Confirm signature' }}
+          </button>
+
+          <button type="button" class="sg-resend" :disabled="cooldown > 0 || otpSending" @click="requestOtp">
+            {{ cooldown > 0 ? `Resend code in ${cooldown}s` : (otpSending ? 'Sending…' : 'Resend code') }}
           </button>
         </div>
       </template>
@@ -94,6 +113,8 @@
 
 <script setup lang="ts">
 import SignaturePad from '~/components/ui/SignaturePad.vue'
+import CodeInput from '~/components/verification/CodeInput.vue'
+import { useTenantSignOtp } from '~/composables/useTenantSignOtp'
 
 definePageMeta({ layout: false })
 
@@ -124,6 +145,8 @@ const padRef = ref<any>(null)
 
 const canSubmit = computed(() => signerName.value.trim().length > 1 && consent.value && padRef.value && !padRef.value.isEmpty)
 
+const { otpRequested, otpCode, otpSending, otpError, cooldown, requestOtp } = useTenantSignOtp(token)
+
 const INVENTORY_TYPE_LABELS: Record<string, string> = { checkin: 'Check-in', interim: 'Interim inspection', checkout: 'Check-out' }
 const inventoryTypeLabel = computed(() => INVENTORY_TYPE_LABELS[data.value?.inventoryType ?? ''] ?? data.value?.inventoryType ?? '-')
 const furnishingLabel = computed(() => {
@@ -147,19 +170,31 @@ onMounted(async () => {
   }
 })
 
-async function onSubmit() {
+// Signature + name + consent are captured before the OTP step and don't
+// change after - the pad's drawing would be awkward to re-validate once
+// the form is swapped out for the code input, so the data URL is grabbed
+// here and reused by onSubmit below.
+let capturedSignatureDataUrl = ''
+
+async function onRequestOtp() {
   if (!canSubmit.value) return
   const signatureDataUrl = padRef.value?.getDataUrl()
   if (!signatureDataUrl) {
-    submitError.value = 'Please draw your signature first.'
+    otpError.value = 'Please draw your signature first.'
     return
   }
+  capturedSignatureDataUrl = signatureDataUrl
+  await requestOtp()
+}
+
+async function onSubmit() {
+  if (otpCode.value.length !== 6) return
   submitting.value = true
   submitError.value = ''
   try {
     await $fetch(`${config.public.apiBase}/questions/tenancy-sign/${token}`, {
       method: 'POST',
-      body: { signerName: signerName.value.trim(), signatureDataUrl },
+      body: { signerName: signerName.value.trim(), signatureDataUrl: capturedSignatureDataUrl, otpCode: otpCode.value },
     })
     alreadySigned.value = true
   } catch (err: any) {
@@ -281,4 +316,22 @@ async function onSubmit() {
 }
 .sg-consent input { margin-top: 2px; flex-shrink: 0; }
 .sg-err { color: #c0364a; font-size: 0.7813rem; font-weight: 600; margin-bottom: 10px; }
+
+.sg-otp-head { text-align: center; margin-bottom: 18px; }
+.sg-otp-title { font-size: 1rem; font-weight: 800; color: #0e2840; }
+.sg-otp-sub { font-size: 0.8125rem; color: #6b7089; margin-top: 6px; line-height: 1.5; }
+.sg-resend {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  margin-top: 14px;
+  padding: 6px;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #00a19a;
+  cursor: pointer;
+}
+.sg-resend:disabled { color: #9aa3a0; cursor: not-allowed; }
 </style>
