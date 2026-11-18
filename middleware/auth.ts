@@ -11,7 +11,18 @@ export default defineNuxtRouteMiddleware(async (to) => {
       const { refreshAccessToken } = useAuth()
       await refreshAccessToken()
     } catch {
-      // No valid refresh cookie — genuinely signed out.
+      // No valid refresh cookie — genuinely signed out. Clear the
+      // umu_has_session_mobile flag cookie too: it's what sent us to a
+      // protected page in the first place (middleware/guest.ts redirects
+      // to /dashboard whenever it's set, including from a stale pre-
+      // migration localStorage token that session-flag-sync.client.ts
+      // backfills it from). Leaving it set after a confirmed-failed
+      // refresh means guest.ts keeps believing there's a session and
+      // bounces the user straight back here from /onboarding/signin,
+      // which bounces back here again on the next failed refresh — an
+      // infinite dashboard<->signin redirect loop that hammers
+      // /auth/refresh/mobile until the backend rate-limits it (429).
+      clearSessionFlag()
     }
   }
 
