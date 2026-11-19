@@ -16,6 +16,9 @@
         <div>
           <div class="vlt-doc-head-name">{{ doc.title }}</div>
           <div class="vlt-doc-head-meta">{{ doc.size }} · Added {{ doc.uploadedAt }}</div>
+          <span v-if="provenanceStyle" class="vlt-provenance-chip" :class="provenanceStyle.className">
+            <img :src="provenanceStyle.icon" alt="" loading="lazy" />{{ doc.provenanceStatusLabel }}
+          </span>
         </div>
       </div>
 
@@ -83,6 +86,14 @@
           <div class="vlt-info-row"><span>Category</span><b>{{ categoryLabel }}</b></div>
         </div>
 
+        <label class="vlt-publish-row">
+          <input type="checkbox" :checked="!!doc.verifiedAt" :disabled="checking" @change="toggleChecked($event)" />
+          <span class="vlt-vis-body">
+            <span class="vlt-vis-label">I've reviewed this document</span>
+            <span class="vlt-vis-desc">Confirms it's correct and up to date. This is your own check, not independent verification.</span>
+          </span>
+        </label>
+
         <button type="button" class="vlt-save-btn" :disabled="saving" @click="save">{{ saving ? 'Saving…' : 'Save changes' }}</button>
       </template>
 
@@ -118,18 +129,21 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useVault, VAULT_CATEGORIES, VAULT_VISIBILITY_ICON } from '~/composables/useVault'
+import { useVault, VAULT_CATEGORIES, VAULT_VISIBILITY_ICON, VAULT_PROVENANCE_STYLE } from '~/composables/useVault'
 import { usePassportCollaborators } from '~/composables/usePassportCollaborators'
 
 const route = useRoute()
 const router = useRouter()
 const docId = route.params.docId
-const { getDocumentDetail, setDocumentAccess, addDocumentGrant, removeDocumentGrant, updateDocumentMeta } = useVault()
+const { getDocumentDetail, setDocumentAccess, setDocumentChecked, addDocumentGrant, removeDocumentGrant, updateDocumentMeta } = useVault()
 const { getCollaborators } = usePassportCollaborators()
 
 const loading = ref(true)
 const doc = ref(null)
 const saving = ref(false)
+const checking = ref(false)
+
+const provenanceStyle = computed(() => doc.value?.provenanceStatus ? VAULT_PROVENANCE_STYLE[doc.value.provenanceStatus] : null)
 const activeTab = ref('Details')
 const tabs = ['Details', 'Sharing', 'History', 'Related']
 
@@ -192,6 +206,22 @@ async function save() {
   }
 }
 
+async function toggleChecked(e) {
+  const checkedNow = e.target.checked
+  checking.value = true
+  try {
+    const res = await setDocumentChecked(docId, checkedNow)
+    doc.value.verifiedAt = res.verifiedAt
+    doc.value.provenanceStatus = res.provenanceStatus
+    doc.value.provenanceStatusLabel = res.provenanceStatusLabel
+  } catch (err) {
+    console.error('Failed to update document check', err)
+    e.target.checked = !checkedNow
+  } finally {
+    checking.value = false
+  }
+}
+
 async function unlink() {
   try {
     await updateDocumentMeta(docId, { passportId: null })
@@ -235,6 +265,8 @@ onMounted(async () => {
 .vlt-doc-head-icon img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .vlt-doc-head-name { font-size: 1rem; font-weight: 800; color: #231d45; }
 .vlt-doc-head-meta { font-size: 0.75rem; color: #6b7089; margin-top: 2px; }
+.vlt-provenance-chip { display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; padding: 3px 9px; border-radius: 999px; font-size: 0.6875rem; font-weight: 700; }
+.vlt-provenance-chip img { width: 13px; height: 13px; object-fit: contain; }
 
 .vlt-dtabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 1px solid #f0f2f5; }
 .vlt-dtab { flex: 1; padding: 10px 0; background: none; border: none; border-bottom: 2px solid transparent; color: #6b7089; font-weight: 700; font-size: 0.8125rem; cursor: pointer; }

@@ -28,6 +28,18 @@ export const VAULT_VISIBILITY_ICON: Record<string, string> = {
   PUBLISHED: '/op-icons/misc/globe.png',
 }
 
+// Provenance/assurance status (client feedback, 2026-11-19) - mirrors
+// computeProvenanceStatus in umu-backend/src/common/provenance-status.ts.
+// Labels come straight from the backend response (provenanceStatusLabel);
+// this map is just the per-status chip colour/icon for display.
+export const VAULT_PROVENANCE_STYLE: Record<string, { icon: string; className: string }> = {
+  added_by_homeowner: { icon: '/op-icons/misc/book.png', className: 'bg-gray-100 text-gray-600' },
+  source_confirmed: { icon: '/op-icons/passportview/pendingCircle.svg', className: 'bg-blue-50 text-blue-700' },
+  checked: { icon: '/op-icons/calendar/shield.png', className: 'bg-green-50 text-green-700' },
+  needs_checking: { icon: '/op-icons/calendar/shield.png', className: 'bg-amber-50 text-amber-700' },
+  expired: { icon: '/op-icons/misc/wrench.png', className: 'bg-red-50 text-red-700' },
+}
+
 export const useVault = () => {
   const config = useRuntimeConfig()
   const base = config.public.apiBase
@@ -85,6 +97,16 @@ export const useVault = () => {
   // Per-document sharing here only ever targets personal UserDocuments
   // added via "+ Add document" - Home records (getHomeRecords above) are
   // read-only in this app's vault, so the :kind segment is always 'user'.
+  // Owner self-check ("I've reviewed this and it's correct and up to
+  // date" - client feedback, 2026-11-19). Drives provenanceStatus shown on
+  // the document detail page; see VAULT_PROVENANCE_LABEL/ICON below.
+  const setDocumentChecked = (documentId: string, checked: boolean) =>
+    $fetch(`${base}/documents/${documentId}/checked`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: { checked },
+    })
+
   const addDocumentGrant = (documentId: string, collaboratorUserId: string) =>
     $fetch(`${base}/documents/user/${documentId}/grants`, {
       method: 'POST',
@@ -115,6 +137,7 @@ export const useVault = () => {
     getDocumentDetail,
     updateDocumentMeta,
     setDocumentAccess,
+    setDocumentChecked,
     addDocumentGrant,
     removeDocumentGrant,
     uploadDocument,
