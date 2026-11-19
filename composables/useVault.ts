@@ -99,9 +99,13 @@ export const useVault = () => {
   // read-only in this app's vault, so the :kind segment is always 'user'.
   // Owner self-check ("I've reviewed this and it's correct and up to
   // date" - client feedback, 2026-11-19). Drives provenanceStatus shown on
-  // the document detail page; see VAULT_PROVENANCE_LABEL/ICON below.
-  const setDocumentChecked = (documentId: string, checked: boolean) =>
-    $fetch(`${base}/documents/${documentId}/checked`, {
+  // the document detail page; see VAULT_PROVENANCE_STYLE above. kind
+  // defaults to 'user' since this app's document detail page only shows
+  // Vault documents (UserDocument) - home records (QuestionAnswer-based,
+  // kind 'answer') are read-only here, see getHomeRecords above - but the
+  // backend endpoint supports both, same :kind/:id split as setDocumentAccess.
+  const setDocumentChecked = (documentId: string, checked: boolean, kind: 'answer' | 'user' = 'user') =>
+    $fetch(`${base}/documents/${kind}/${documentId}/checked`, {
       method: 'POST',
       headers: getHeaders(),
       body: { checked },
