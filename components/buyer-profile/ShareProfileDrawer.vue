@@ -250,7 +250,11 @@ const form = ref({
   recipientName: '',
   recipientEmail: '',
   expiresInDays: 30,
-  scope: ['identity', 'deposit', 'sof', 'afford', 'story'] as string[],
+  // Financial categories (deposit/sof/afford/credit) are opt-in, not
+  // preselected — the backend's safe share-scope default is
+  // ['identity', 'story']; mirror it here so this form doesn't silently
+  // override that default with everything pre-checked.
+  scope: ['identity', 'story'] as string[],
 })
 const customDays = ref<number | null>(null)
 const isCustomValid = computed(

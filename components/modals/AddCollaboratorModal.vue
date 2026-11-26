@@ -472,7 +472,9 @@ const batchRole = ref('')
 const batchPermission = ref('view')
 const batchAccessDuration = ref('until_removed')
 const batchExpiresAt = ref('')
-const batchHistoryAccess = ref(true)
+// Restricted by default — the owner opts a collaborator INTO seeing the
+// full passport history, rather than opting them out of it.
+const batchHistoryAccess = ref(false)
 
 const sectionScope = ref('entire') // 'entire' | 'selected'
 const sectionsFull = ref([]) // [{ key, title, tasks: [{ key, title }] }]
@@ -587,7 +589,7 @@ function resetFields() {
   batchPermission.value = 'view'
   batchAccessDuration.value = 'until_removed'
   batchExpiresAt.value = ''
-  batchHistoryAccess.value = true
+  batchHistoryAccess.value = false
   sectionScope.value = 'entire'
   selectedSectionKeys.value = []
   selectedTaskKeysBySection.value = {}
