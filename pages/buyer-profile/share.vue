@@ -39,10 +39,6 @@
           <div class="scope-check"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></div>
           ID Verified (Onfido / DVS)
         </div>
-        <div v-if="passport?.fundsAmount" class="scope-row">
-          <div class="scope-check"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></div>
-          Budget - up to {{ fundsShort }}
-        </div>
         <div class="scope-row">
           <div class="scope-check"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></div>
           {{ chainShort }}{{ passport?.solicitorStatus === 'yes' ? ' · solicitor instructed' : '' }}
@@ -52,7 +48,7 @@
           Your story (optional)
         </div>
         <div class="scope-hidden">
-          🔒 Not shared: personal address, full name, date of birth, account numbers
+          🔒 Not shared: proof of deposit, affordability, personal address, full name, date of birth, account numbers
         </div>
       </div>
 
@@ -276,9 +272,15 @@ const chainShort = computed(() => {
 // URL from publicRef under a fake "umu.co" domain and the wrong
 // "/profile/" path, which is why it 404'd for every visitor: neither the
 // domain, the path, nor the identifier matched anything real. A generic
-// (no named recipient), full-scope BuyerProfileShare is created lazily —
-// reusing one if this tab already minted an unexpired one — and its real
-// token backs both the QR code and "Copy link".
+// (no named recipient) BuyerProfileShare is created lazily — reusing one
+// if this tab already minted an unexpired one — and its real token backs
+// both the QR code and "Copy link".
+//
+// createShare({}) deliberately omits scope so it picks up the backend's
+// safe default (identity + story only, never deposit/sof/afford) rather
+// than this generic, not-tied-to-a-recipient link exposing financial
+// detail to anyone who scans/forwards it — same restrictive-by-default
+// principle as ShareProfileDrawer and the Send to Agent flow.
 const linkShareToken = ref<string | null>(null)
 const linkShareLoading = ref(false)
 
