@@ -23,8 +23,14 @@ import type { CapacitorConfig } from '@capacitor/cli'
 // ──────────────────────────────────────────────────────────────────────
 const USE_REMOTE = process.env.CAPACITOR_USE_REMOTE !== 'false'
 
+// Overridable so the TestFlight/App Store build can target the client's
+// own Apple Developer account's bundle id (set CAPACITOR_APP_ID in the
+// CI secrets) without a code change — 'io.umovingu' stays the local/dev
+// default. The native project's bundle id is set from this value the
+// moment `cap add ios`/`cap sync` runs, so this is the single source of
+// truth rather than also hand-editing the Xcode project.
 const config: CapacitorConfig = {
-  appId: 'io.umovingu',
+  appId: process.env.CAPACITOR_APP_ID || 'io.umovingu',
   appName: 'UMovingU',
   webDir: '.output/public',
   ...(USE_REMOTE

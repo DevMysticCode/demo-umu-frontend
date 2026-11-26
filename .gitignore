@@ -36,6 +36,12 @@ dist-ssr
 android/app/umu-upload-key.jks
 android/app/keystore.properties
 
+# App Store Connect API key — decoded locally by the ios-testflight
+# workflow from a GitHub Secret, never committed.
+AuthKey.p8
+fastlane/report.xml
+*.ipa
+
 # Client-supplied asset archives � keep local, we only commit the
 # unpacked images referenced by the app.
 public/op-icons/**/*.zip

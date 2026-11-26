@@ -1,0 +1,77 @@
+name: ios-testflight
+
+# Builds the iOS app on GitHub's own macOS runner (no local Mac needed)
+# and uploads it to TestFlight. Runs on every push to main, plus
+# workflow_dispatch so it can be triggered manually to verify the
+# pipeline before relying on an actual push.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  testflight:
+    name: build and upload to TestFlight
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: install JS deps
+        run: npm ci --legacy-peer-deps
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      # Capacitor's iOS platform needs CocoaPods (macOS-only), so it's
+      # generated here rather than committed - no Mac available to the
+      # maintainer to generate/update it locally. Idempotent: skipped
+      # once an ios/ folder exists (e.g. if it's committed later).
+      - name: add iOS platform if missing
+        run: |
+          if [ ! -d ios ]; then
+            npx cap add ios
+          fi
+
+      - name: generate app icons/splash
+        run: npm run mobile:assets
+
+      # CAPACITOR_USE_REMOTE=false (inside mobile:build:bundled:ios) is
+      # the part that satisfies Apple's "no thin WebView wrapper"
+      # requirement (Guideline 4.2) - the shell loads its own bundled
+      # assets instead of pointing at the Vercel deployment. See
+      # capacitor.config.ts's own comment block for the full rationale.
+      - name: build web app + sync iOS project
+        run: npm run mobile:build:bundled:ios
+        env:
+          CAPACITOR_APP_ID: ${{ secrets.CAPACITOR_APP_ID }}
+          NUXT_PUBLIC_API_BASE: ${{ secrets.NUXT_PUBLIC_API_BASE }}
+          NUXT_PUBLIC_STRIPE_KEY: ${{ secrets.NUXT_PUBLIC_STRIPE_KEY }}
+          NUXT_PUBLIC_MAPBOX_TOKEN: ${{ secrets.NUXT_PUBLIC_MAPBOX_TOKEN }}
+          NUXT_PUBLIC_GOOGLE_API_KEY: ${{ secrets.NUXT_PUBLIC_GOOGLE_API_KEY }}
+          NUXT_PUBLIC_OS_API_KEY: ${{ secrets.NUXT_PUBLIC_OS_API_KEY }}
+
+      - name: decode App Store Connect API key
+        run: echo "${{ secrets.ASC_KEY_CONTENT_BASE64 }}" | base64 --decode > AuthKey.p8
+
+      - name: build + upload to TestFlight
+        run: bundle exec fastlane testflight
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_FILEPATH: ${{ github.workspace }}/AuthKey.p8
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+
+      - name: clean up API key
+        if: always()
+        run: rm -f AuthKey.p8
