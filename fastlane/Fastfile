@@ -21,6 +21,24 @@ platform :ios do
     UI.important("Total: #{certs.length}")
   end
 
+  desc "One-time: revoke the orphaned distribution certs from before " \
+       "match was wired up (confirmed via list_certs - both created by " \
+       "this pipeline today, no private key persisted for either, so " \
+       "neither can ever be reused). Frees the team's cert-count limit " \
+       "so match can create a fresh one and start persisting it properly."
+  lane :revoke_stale_certs do
+    app_store_connect_api_key(
+      key_id: ENV.fetch("ASC_KEY_ID"),
+      issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+      key_filepath: ENV.fetch("ASC_KEY_FILEPATH"),
+      in_house: false,
+    )
+    Spaceship::ConnectAPI::Certificate.all(filter: { certificateType: "DISTRIBUTION" }).each do |c|
+      UI.important("Revoking orphaned cert #{c.id}")
+      c.delete!
+    end
+  end
+
   desc "Build the already-synced Capacitor iOS project and upload to TestFlight"
   lane :testflight do
     # Without this, importing a certificate into the runner's default
