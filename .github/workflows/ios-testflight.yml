@@ -34,6 +34,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # git's HTTP transport has no stall timeout by default, so a slow
+      # or dropped connection during a Swift Package Manager checkout
+      # (xcodebuild shells out to git for this) can hang forever rather
+      # than fail - this is what caused run 45974060701 to freeze for
+      # 37+ minutes mid-transfer of the capacitor-swift-pm package.
+      - name: set a git transfer stall timeout
+        run: |
+          git config --global http.lowSpeedLimit 1000
+          git config --global http.lowSpeedTime 30
+
       - uses: actions/setup-node@v4
         with:
           # Capacitor's CLI requires Node >=22 (cap add ios fails on 20
@@ -81,6 +91,12 @@ jobs:
         run: echo "${{ secrets.ASC_KEY_CONTENT_BASE64 }}" | base64 --decode > AuthKey.p8
 
       - name: build + upload to TestFlight
+        # Confirmed hang (2026-11-27, run 45974060701): xcodebuild's SPM
+        # package checkout froze for 37+ minutes mid-transfer with no
+        # error - git has no default timeout on a stalled HTTPS transfer.
+        # timeout-minutes bounds it so a repeat shows up as a fast, clear
+        # failure instead of silently burning an hour of runner time.
+        timeout-minutes: 20
         run: bundle exec fastlane ${{ github.event.inputs.lane || 'testflight' }}
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
