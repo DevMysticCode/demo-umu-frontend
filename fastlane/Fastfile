@@ -96,6 +96,21 @@ platform :ios do
       profile_name: profile_name,
     )
 
+    # Apple rejects an upload whose build number isn't strictly higher
+    # than the last one already on App Store Connect for this app
+    # ("The bundle version must be higher than the previously uploaded
+    # version: '1'" - confirmed, run 45999631224). The project's build
+    # number is otherwise static, so bump it to one past whatever
+    # TestFlight already has on every run.
+    latest_build_number = latest_testflight_build_number(
+      app_identifier: app_identifier,
+      team_id: team_id,
+    )
+    increment_build_number(
+      xcodeproj: "ios/App/App.xcodeproj",
+      build_number: (latest_build_number + 1).to_s,
+    )
+
     # Capacitor 8's iOS template uses Swift Package Manager (the
     # CapApp-SPM folder), not CocoaPods — there is no Podfile and no
     # App.xcworkspace, only App.xcodeproj. Packages were already
