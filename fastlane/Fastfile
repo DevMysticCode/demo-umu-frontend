@@ -42,9 +42,18 @@ platform :ios do
       # update_code_signing_settings only flips the project file to
       # "Automatic" - it doesn't create the actual certificate/
       # provisioning profile. -allowProvisioningUpdates lets xcodebuild
-      # itself create/update those via the App Store Connect API key
-      # (first build under a bundle id has neither yet).
-      xcargs: "-allowProvisioningUpdates",
+      # create/update those itself (first build under a bundle id has
+      # neither yet) - but xcodebuild's own provisioning step doesn't
+      # automatically pick up the app_store_connect_api_key set above;
+      # it needs the same key handed to it directly, or it falls back to
+      # wanting an actual Xcode-signed-in Apple ID ("No Accounts: Add a
+      # new account in Accounts settings").
+      xcargs: [
+        "-allowProvisioningUpdates",
+        "-authenticationKeyPath #{ENV.fetch('ASC_KEY_FILEPATH')}",
+        "-authenticationKeyID #{ENV.fetch('ASC_KEY_ID')}",
+        "-authenticationKeyIssuerID #{ENV.fetch('ASC_ISSUER_ID')}",
+      ].join(" "),
     )
 
     upload_to_testflight(
