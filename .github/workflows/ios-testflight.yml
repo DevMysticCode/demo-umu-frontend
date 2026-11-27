@@ -16,7 +16,10 @@ concurrency:
 jobs:
   testflight:
     name: build and upload to TestFlight
-    runs-on: macos-14
+    # macos-14 was being allocated as a "macos-14-arm64-us-xl" large
+    # runner, which needs a paid plan - macos-latest/macos-15 stays on
+    # the standard free-tier runner (deployment team guidance, 2026-11-27).
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
 
