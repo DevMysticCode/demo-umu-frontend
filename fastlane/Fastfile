@@ -35,7 +35,9 @@ platform :ios do
     # use_automatic_signing call re-touches all configs), so set it
     # directly on the project via xcodeproj instead.
     require "xcodeproj"
-    xcode_project = Xcodeproj::Project.open("ios/App/App.xcodeproj")
+    # Raw Ruby (unlike fastlane's own actions) resolves this relative to
+    # the fastlane/ directory the lane runs from, not the repo root.
+    xcode_project = Xcodeproj::Project.open("../ios/App/App.xcodeproj")
     xcode_project.targets.each do |target|
       target.build_configurations.each do |config|
         next unless config.name == "Release"
