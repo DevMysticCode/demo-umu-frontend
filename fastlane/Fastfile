@@ -27,7 +27,7 @@ platform :ios do
     # via the API and signing manually sidesteps that resolution
     # entirely - "appstore" is passed directly, nothing to infer.
     get_certificates(
-      type: "appstore",
+      development: false,
       team_id: team_id,
     )
 
