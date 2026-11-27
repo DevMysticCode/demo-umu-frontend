@@ -16,7 +16,7 @@ platform :ios do
     )
     certs = Spaceship::ConnectAPI::Certificate.all(filter: { certificateType: "DISTRIBUTION" })
     certs.each do |c|
-      UI.important("CERT id=#{c.id} name=#{c.display_name} serial=#{c.serial_number} created=#{c.created_date} expires=#{c.expiration_date}")
+      UI.important("CERT id=#{c.id} attrs=#{c.attributes.inspect}")
     end
     UI.important("Total: #{certs.length}")
   end
