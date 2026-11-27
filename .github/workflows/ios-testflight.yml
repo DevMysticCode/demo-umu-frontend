@@ -76,6 +76,7 @@ jobs:
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY_FILEPATH: ${{ github.workspace }}/AuthKey.p8
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          CAPACITOR_APP_ID: ${{ secrets.CAPACITOR_APP_ID }}
 
       - name: clean up API key
         if: always()
