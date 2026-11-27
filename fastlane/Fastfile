@@ -77,13 +77,23 @@ platform :ios do
       readonly: false,
     )
 
+    # lane_context[SharedValues::SIGH_NAME] is nil here - match doesn't
+    # populate it the way a direct sigh call does. The real profile name
+    # is only available via the ENV var match/sigh actually set
+    # (confirmed in logs: "sigh_<bundle id>_appstore_profile-name" ->
+    # "match AppStore <bundle id>"); update_code_signing_settings was
+    # silently skipping profile_name entirely without this, leaving
+    # PROVISIONING_PROFILE_SPECIFIER unset and the archive failing with
+    # "App requires a provisioning profile".
+    profile_name = ENV.fetch("sigh_#{app_identifier}_appstore_profile-name")
+
     update_code_signing_settings(
       use_automatic_signing: false,
       team_id: team_id,
       path: "ios/App/App.xcodeproj",
       build_configurations: ["Release"],
       code_sign_identity: "Apple Distribution",
-      profile_name: lane_context[SharedValues::SIGH_NAME],
+      profile_name: profile_name,
     )
 
     # Capacitor 8's iOS template uses Swift Package Manager (the
@@ -103,7 +113,7 @@ platform :ios do
         signingStyle: "manual",
         teamID: team_id,
         provisioningProfiles: {
-          app_identifier => lane_context[SharedValues::SIGH_NAME],
+          app_identifier => profile_name,
         },
       },
       xcargs: "-scmProvider system -clonedSourcePackagesDirPath ios/App/.spm-cache",
