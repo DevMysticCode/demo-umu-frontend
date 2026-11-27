@@ -99,16 +99,21 @@ platform :ios do
     # Capacitor 8's iOS template uses Swift Package Manager (the
     # CapApp-SPM folder), not CocoaPods — there is no Podfile and no
     # App.xcworkspace, only App.xcodeproj. Packages were already
-    # resolved with the system git provider in a prior workflow step
-    # (Xcode's own built-in SCM handling hung for 37+ minutes doing
-    # this inline - deployment team diagnosis, 2026-11-27); passing the
-    # same flags here means archive reuses that resolution instead of
-    # redoing it with Xcode's own (hang-prone) implementation.
+    # resolved with the system git provider in a prior workflow step.
+    # build_app/gym ALSO runs its own automatic
+    # "xcodebuild -resolvePackageDependencies" pre-check before every
+    # archive, using Xcode's default (hang-prone) built-in git handling
+    # with none of our -scmProvider/-clonedSourcePackagesDirPath xcargs
+    # - confirmed (2026-11-27, run 45989778340) still hanging at the
+    # exact same checkout step despite the explicit pre-resolve step
+    # succeeding moments earlier. skip_package_dependencies_resolution
+    # removes that redundant, unprotected call entirely.
     build_app(
       project: "ios/App/App.xcodeproj",
       scheme: "App",
       configuration: "Release",
       export_method: "app-store",
+      skip_package_dependencies_resolution: true,
       export_options: {
         signingStyle: "manual",
         teamID: team_id,
