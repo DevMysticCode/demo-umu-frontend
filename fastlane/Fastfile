@@ -88,8 +88,12 @@ platform :ios do
 
     # Capacitor 8's iOS template uses Swift Package Manager (the
     # CapApp-SPM folder), not CocoaPods — there is no Podfile and no
-    # App.xcworkspace, only App.xcodeproj. Xcode resolves the SPM
-    # dependencies itself during the build.
+    # App.xcworkspace, only App.xcodeproj. Packages were already
+    # resolved with the system git provider in a prior workflow step
+    # (Xcode's own built-in SCM handling hung for 37+ minutes doing
+    # this inline - deployment team diagnosis, 2026-11-27); passing the
+    # same flags here means archive reuses that resolution instead of
+    # redoing it with Xcode's own (hang-prone) implementation.
     build_app(
       project: "ios/App/App.xcodeproj",
       scheme: "App",
@@ -102,6 +106,7 @@ platform :ios do
           app_identifier => lane_context[SharedValues::SIGH_NAME],
         },
       },
+      xcargs: "-scmProvider system -clonedSourcePackagesDirPath ios/App/.spm-cache",
     )
 
     upload_to_testflight(

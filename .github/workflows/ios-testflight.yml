@@ -87,15 +87,40 @@ jobs:
           NUXT_PUBLIC_GOOGLE_API_KEY: ${{ secrets.NUXT_PUBLIC_GOOGLE_API_KEY }}
           NUXT_PUBLIC_OS_API_KEY: ${{ secrets.NUXT_PUBLIC_OS_API_KEY }}
 
+      # Deployment team's diagnosis (2026-11-27, after run 45974060701
+      # hung 37+ min mid SPM checkout and the http.lowSpeedTime config
+      # alone didn't fix it): Xcode's own built-in git/SCM handling for
+      # package resolution can hang in a CI sandbox. -scmProvider system
+      # makes it shell out to the system's real git instead, and
+      # resolving packages explicitly here (rather than letting gym
+      # trigger it again inside the archive step) turns the hang into a
+      # normal, fast step. Caching SourcePackages across runs then
+      # avoids re-fetching the same dependency versions every time.
+      - name: cache resolved Swift packages
+        uses: actions/cache@v4
+        with:
+          path: ios/App/.spm-cache
+          key: spm-${{ hashFiles('package-lock.json') }}
+          restore-keys: spm-
+
+      - name: pre-resolve Swift Package dependencies
+        timeout-minutes: 10
+        run: |
+          xcodebuild -resolvePackageDependencies \
+            -project ios/App/App.xcodeproj \
+            -scheme App \
+            -scmProvider system \
+            -clonedSourcePackagesDirPath ios/App/.spm-cache
+
       - name: decode App Store Connect API key
         run: echo "${{ secrets.ASC_KEY_CONTENT_BASE64 }}" | base64 --decode > AuthKey.p8
 
       - name: build + upload to TestFlight
         # Confirmed hang (2026-11-27, run 45974060701): xcodebuild's SPM
         # package checkout froze for 37+ minutes mid-transfer with no
-        # error - git has no default timeout on a stalled HTTPS transfer.
-        # timeout-minutes bounds it so a repeat shows up as a fast, clear
-        # failure instead of silently burning an hour of runner time.
+        # error. timeout-minutes bounds it so a repeat shows up as a
+        # fast, clear failure instead of silently burning an hour of
+        # runner time.
         timeout-minutes: 20
         run: bundle exec fastlane ${{ github.event.inputs.lane || 'testflight' }}
         env:
