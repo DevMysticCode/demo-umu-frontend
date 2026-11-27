@@ -7,7 +7,12 @@ name: ios-testflight
 on:
   push:
     branches: [main]
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      lane:
+        description: "fastlane lane to run (default: testflight)"
+        required: false
+        default: testflight
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -70,7 +75,7 @@ jobs:
         run: echo "${{ secrets.ASC_KEY_CONTENT_BASE64 }}" | base64 --decode > AuthKey.p8
 
       - name: build + upload to TestFlight
-        run: bundle exec fastlane testflight
+        run: bundle exec fastlane ${{ github.event.inputs.lane || 'testflight' }}
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}

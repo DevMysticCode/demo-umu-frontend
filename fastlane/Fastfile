@@ -6,6 +6,21 @@ default_platform(:ios)
 # code change. See .github/workflows/ios-testflight.yml for how these
 # are set.
 platform :ios do
+  desc "Read-only: list this team's distribution certificates (id, name, created date)"
+  lane :list_certs do
+    app_store_connect_api_key(
+      key_id: ENV.fetch("ASC_KEY_ID"),
+      issuer_id: ENV.fetch("ASC_ISSUER_ID"),
+      key_filepath: ENV.fetch("ASC_KEY_FILEPATH"),
+      in_house: false,
+    )
+    certs = Spaceship::ConnectAPI::Certificate.all(filter: { certificateType: "DISTRIBUTION" })
+    certs.each do |c|
+      UI.important("CERT id=#{c.id} name=#{c.display_name} serial=#{c.serial_number} created=#{c.created_date} expires=#{c.expiration_date}")
+    end
+    UI.important("Total: #{certs.length}")
+  end
+
   desc "Build the already-synced Capacitor iOS project and upload to TestFlight"
   lane :testflight do
     # Without this, importing the distribution certificate into the
