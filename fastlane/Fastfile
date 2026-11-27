@@ -39,6 +39,12 @@ platform :ios do
         signingStyle: "automatic",
         teamID: ENV.fetch("APPLE_TEAM_ID"),
       },
+      # update_code_signing_settings only flips the project file to
+      # "Automatic" - it doesn't create the actual certificate/
+      # provisioning profile. -allowProvisioningUpdates lets xcodebuild
+      # itself create/update those via the App Store Connect API key
+      # (first build under a bundle id has neither yet).
+      xcargs: "-allowProvisioningUpdates",
     )
 
     upload_to_testflight(
