@@ -31,10 +31,11 @@ platform :ios do
       team_id: team_id,
     )
 
+    # No "type:" option here - App Store is the default when none of
+    # adhoc/developer_id/development are set to true.
     get_provisioning_profile(
       app_identifier: app_identifier,
       team_id: team_id,
-      type: "appstore",
       filename: "AppStore.mobileprovision",
     )
     profile_name = lane_context[SharedValues::SIGH_NAME]
