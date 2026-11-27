@@ -30,17 +30,20 @@ platform :ios do
     # The Capacitor template's Release config still has CODE_SIGN_IDENTITY
     # pinned to "iPhone Developer", so automatic signing resolves it as a
     # "development" provisioning style for Release too - which needs
-    # registered device UDIDs (none exist). Passing the distribution
-    # identity as an xcarg instead (rather than here) conflicts with that
-    # resolved style, so it has to be fixed in the project settings
-    # themselves, scoped to Release only.
-    update_code_signing_settings(
-      use_automatic_signing: true,
-      team_id: ENV.fetch("APPLE_TEAM_ID"),
-      path: "ios/App/App.xcodeproj",
-      build_configurations: ["Release"],
-      code_sign_identity: "Apple Distribution",
-    )
+    # registered device UDIDs (none exist). update_code_signing_settings'
+    # own code_sign_identity: param doesn't stick here (the preceding
+    # use_automatic_signing call re-touches all configs), so set it
+    # directly on the project via xcodeproj instead.
+    require "xcodeproj"
+    xcode_project = Xcodeproj::Project.open("ios/App/App.xcodeproj")
+    xcode_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        next unless config.name == "Release"
+        config.build_settings["CODE_SIGN_IDENTITY"] = "Apple Distribution"
+        config.build_settings["CODE_SIGN_STYLE"] = "Automatic"
+      end
+    end
+    xcode_project.save
 
     # Capacitor 8's iOS template uses Swift Package Manager (the
     # CapApp-SPM folder), not CocoaPods — there is no Podfile and no
