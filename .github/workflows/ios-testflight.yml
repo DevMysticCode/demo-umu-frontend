@@ -74,8 +74,10 @@ jobs:
       # pinned and reproducible rather than whatever the runner image
       # happens to ship.
       - name: install CocoaPods dependencies
-        run: bundle exec pod install --repo-update
-        working-directory: ios/App
+        run: |
+          echo "--- ios/ ---"; ls -la ios || true
+          echo "--- ios/App/ ---"; ls -la ios/App || true
+          cd ios/App && bundle exec pod install --repo-update
 
       - name: decode App Store Connect API key
         run: echo "${{ secrets.ASC_KEY_CONTENT_BASE64 }}" | base64 --decode > AuthKey.p8
