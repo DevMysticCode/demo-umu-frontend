@@ -121,7 +121,13 @@ platform :ios do
           app_identifier => profile_name,
         },
       },
-      xcargs: "-scmProvider system -clonedSourcePackagesDirPath ios/App/.spm-cache",
+      # No -clonedSourcePackagesDirPath here - that turned out to be the
+      # actual hang cause (see workflow comment): a custom path here
+      # meant gym's other internal calls, which don't get this xcarg,
+      # kept finding an empty default location and re-resolving from
+      # scratch. Leaving everything on the default location means they
+      # all share what the earlier pre-resolve step already populated.
+      xcargs: "-scmProvider system",
     )
 
     upload_to_testflight(

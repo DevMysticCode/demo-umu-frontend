@@ -107,10 +107,18 @@ jobs:
       # trigger it again inside the archive step) turns the hang into a
       # normal, fast step. Caching SourcePackages across runs then
       # avoids re-fetching the same dependency versions every time.
+      # Using a custom -clonedSourcePackagesDirPath here turned out to be
+      # the actual bug: gym's own internal calls later (-showBuildSettings,
+      # the archive) don't know about that custom path, so they looked in
+      # Xcode's default DerivedData location, found it empty, and tried to
+      # re-resolve from scratch - hanging again (confirmed, run
+      # 45996353375, even with IDESourceControlUseSystemSCM set globally).
+      # Using the default location everywhere means every later call finds
+      # packages already resolved and does no further git/network work.
       - name: cache resolved Swift packages
         uses: actions/cache@v4
         with:
-          path: ios/App/.spm-cache
+          path: ~/Library/Developer/Xcode/DerivedData
           key: spm-${{ hashFiles('package-lock.json') }}
           restore-keys: spm-
 
@@ -120,8 +128,7 @@ jobs:
           xcodebuild -resolvePackageDependencies \
             -project ios/App/App.xcodeproj \
             -scheme App \
-            -scmProvider system \
-            -clonedSourcePackagesDirPath ios/App/.spm-cache
+            -scmProvider system
 
       - name: decode App Store Connect API key
         run: echo "${{ secrets.ASC_KEY_CONTENT_BASE64 }}" | base64 --decode > AuthKey.p8
