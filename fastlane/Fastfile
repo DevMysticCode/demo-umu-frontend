@@ -27,13 +27,15 @@ platform :ios do
       path: "ios/App/App.xcodeproj",
     )
 
-    # The Capacitor template's Release config still has CODE_SIGN_IDENTITY
-    # pinned to "iPhone Developer", so automatic signing resolves it as a
-    # "development" provisioning style for Release too - which needs
-    # registered device UDIDs (none exist). update_code_signing_settings'
-    # own code_sign_identity: param doesn't stick here (the preceding
-    # use_automatic_signing call re-touches all configs), so set it
-    # directly on the project via xcodeproj instead.
+    # The Capacitor template's Release config has CODE_SIGN_IDENTITY
+    # hardcoded to "iPhone Developer". Under true automatic signing, ANY
+    # explicitly-set identity - even a "correct" one like "Apple
+    # Distribution" - conflicts with Xcode's own resolution (confirmed:
+    # setting it to "Apple Distribution" still errored, because Xcode's
+    # automatic resolution independently decided "development" and then
+    # flagged the manual value as conflicting with that). The fix is to
+    # remove the key entirely so Xcode resolves it itself from the
+    # archive action's context.
     require "xcodeproj"
     # Raw Ruby (unlike fastlane's own actions) resolves this relative to
     # the fastlane/ directory the lane runs from, not the repo root.
@@ -41,7 +43,7 @@ platform :ios do
     xcode_project.targets.each do |target|
       target.build_configurations.each do |config|
         next unless config.name == "Release"
-        config.build_settings["CODE_SIGN_IDENTITY"] = "Apple Distribution"
+        config.build_settings.delete("CODE_SIGN_IDENTITY")
         config.build_settings["CODE_SIGN_STYLE"] = "Automatic"
       end
     end
