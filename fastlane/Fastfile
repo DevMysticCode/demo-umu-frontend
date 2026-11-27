@@ -8,6 +8,16 @@ default_platform(:ios)
 platform :ios do
   desc "Build the already-synced Capacitor iOS project and upload to TestFlight"
   lane :testflight do
+    # Without this, importing the distribution certificate into the
+    # runner's default login keychain leaves codesign without
+    # non-interactive access to the private key - it then blocks
+    # forever waiting for a keychain-access prompt that can never
+    # appear in CI (confirmed: the previous run hung for over an hour
+    # right at "Signing Cordova.framework", not a real build step).
+    # setup_ci creates a temporary keychain with explicit codesign
+    # access and no prompts.
+    setup_ci
+
     app_store_connect_api_key(
       key_id: ENV.fetch("ASC_KEY_ID"),
       issuer_id: ENV.fetch("ASC_ISSUER_ID"),
