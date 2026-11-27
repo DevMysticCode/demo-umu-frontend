@@ -66,19 +66,6 @@ jobs:
           NUXT_PUBLIC_GOOGLE_API_KEY: ${{ secrets.NUXT_PUBLIC_GOOGLE_API_KEY }}
           NUXT_PUBLIC_OS_API_KEY: ${{ secrets.NUXT_PUBLIC_OS_API_KEY }}
 
-      # cap sync didn't actually run `pod install` (no CocoaPods on this
-      # runner's default PATH), leaving only App.xcodeproj with no
-      # App.xcworkspace - fastlane's build_app then failed with
-      # "Workspace file not found". cocoapods is installed via the
-      # Gemfile (same bundler-cache as fastlane) so the version is
-      # pinned and reproducible rather than whatever the runner image
-      # happens to ship.
-      - name: install CocoaPods dependencies
-        run: |
-          echo "--- ios/ ---"; ls -la ios || true
-          echo "--- ios/App/ ---"; ls -la ios/App || true
-          cd ios/App && bundle exec pod install --repo-update
-
       - name: decode App Store Connect API key
         run: echo "${{ secrets.ASC_KEY_CONTENT_BASE64 }}" | base64 --decode > AuthKey.p8
 

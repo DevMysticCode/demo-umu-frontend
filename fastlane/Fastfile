@@ -27,8 +27,12 @@ platform :ios do
       path: "ios/App/App.xcodeproj",
     )
 
+    # Capacitor 8's iOS template uses Swift Package Manager (the
+    # CapApp-SPM folder), not CocoaPods — there is no Podfile and no
+    # App.xcworkspace, only App.xcodeproj. Xcode resolves the SPM
+    # dependencies itself during the build.
     build_app(
-      workspace: "ios/App/App.xcworkspace",
+      project: "ios/App/App.xcodeproj",
       scheme: "App",
       export_method: "app-store",
       export_options: {
