@@ -44,6 +44,17 @@ jobs:
           git config --global http.lowSpeedLimit 1000
           git config --global http.lowSpeedTime 30
 
+      # -scmProvider system (passed explicitly to the pre-resolve and
+      # archive xcodebuild calls below) doesn't reach every internal
+      # xcodebuild invocation gym/build_app makes - confirmed (run
+      # 45993257640) gym's own "-showBuildSettings" check hung too,
+      # with its retry timeout growing to 960s and still not finishing.
+      # This forces Xcode's package-resolution machinery onto the
+      # system git provider globally, so every invocation gets the fix,
+      # not just the ones we can pass xcargs to directly.
+      - name: force system git for all Xcode package resolution
+        run: defaults write com.apple.dt.Xcode IDESourceControlUseSystemSCM -bool YES
+
       - uses: actions/setup-node@v4
         with:
           # Capacitor's CLI requires Node >=22 (cap add ios fails on 20
