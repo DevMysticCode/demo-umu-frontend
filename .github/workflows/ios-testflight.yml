@@ -131,6 +131,13 @@ jobs:
           CAPACITOR_APP_ID: ${{ secrets.CAPACITOR_APP_ID }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # gym's internal "xcodebuild -showBuildSettings" call defaults
+          # to a 3s timeout x 4 retries, which is nowhere near enough for
+          # a project with Swift Package dependencies to evaluate its
+          # build graph (confirmed, run 45992818970: "timed out after 4
+          # retries with a base timeout of 3").
+          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 120
+          FASTLANE_XCODEBUILD_SETTINGS_RETRIES: 3
 
       - name: clean up API key
         if: always()
