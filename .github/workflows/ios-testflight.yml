@@ -25,7 +25,9 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          # Capacitor's CLI requires Node >=22 (cap add ios fails on 20
+          # with "[fatal] The Capacitor CLI requires NodeJS >=22.0.0").
+          node-version: '22'
           cache: 'npm'
 
       - name: install JS deps
