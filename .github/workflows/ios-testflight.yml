@@ -18,6 +18,12 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
+permissions:
+  # fastlane match pushes the encrypted cert/profile to the ios-certs
+  # branch of this same repo using the ephemeral per-run GITHUB_TOKEN -
+  # needs write access, which isn't the default.
+  contents: write
+
 jobs:
   testflight:
     name: build and upload to TestFlight
@@ -82,6 +88,8 @@ jobs:
           ASC_KEY_FILEPATH: ${{ github.workspace }}/AuthKey.p8
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           CAPACITOR_APP_ID: ${{ secrets.CAPACITOR_APP_ID }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: clean up API key
         if: always()

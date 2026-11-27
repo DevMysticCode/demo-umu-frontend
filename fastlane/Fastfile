@@ -6,7 +6,7 @@ default_platform(:ios)
 # code change. See .github/workflows/ios-testflight.yml for how these
 # are set.
 platform :ios do
-  desc "Read-only: list this team's distribution certificates (id, name, created date)"
+  desc "Read-only: list this team's distribution certificates"
   lane :list_certs do
     app_store_connect_api_key(
       key_id: ENV.fetch("ASC_KEY_ID"),
@@ -23,12 +23,11 @@ platform :ios do
 
   desc "Build the already-synced Capacitor iOS project and upload to TestFlight"
   lane :testflight do
-    # Without this, importing the distribution certificate into the
-    # runner's default login keychain leaves codesign without
-    # non-interactive access to the private key - it then blocks
-    # forever waiting for a keychain-access prompt that can never
-    # appear in CI (confirmed: the previous run hung for over an hour
-    # right at "Signing Cordova.framework", not a real build step).
+    # Without this, importing a certificate into the runner's default
+    # login keychain leaves codesign without non-interactive access to
+    # the private key - it then blocks forever waiting for a
+    # keychain-access prompt that can never appear in CI (confirmed: an
+    # earlier run hung for over an hour at "Signing Cordova.framework").
     # setup_ci creates a temporary keychain with explicit codesign
     # access and no prompts.
     setup_ci
@@ -43,27 +42,22 @@ platform :ios do
     app_identifier = ENV.fetch("CAPACITOR_APP_ID", "io.umovingu")
     team_id = ENV.fetch("APPLE_TEAM_ID")
 
-    # xcodebuild's own "Automatic" signing could not be made to resolve
-    # a Distribution profile in this headless CI context - every attempt
-    # (forcing the identity, removing it, scoping to Release only) still
-    # had Xcode independently decide "development" and then either ask
-    # for device UDIDs or reject the manual override as conflicting.
-    # Requesting the actual App Store certificate + profile explicitly
-    # via the API and signing manually sidesteps that resolution
-    # entirely - "appstore" is passed directly, nothing to infer.
-    get_certificates(
-      development: false,
-      team_id: team_id,
-    )
-
-    # No "type:" option here - App Store is the default when none of
-    # adhoc/developer_id/development are set to true.
-    get_provisioning_profile(
+    # xcodebuild's own "Automatic" signing could never be made to
+    # resolve a Distribution profile in this headless CI context, and
+    # a prior approach (get_certificates fresh every run, in a
+    # keychain thrown away at the end of the job) silently orphaned a
+    # new certificate on every run until Apple's per-team cert limit
+    # was hit. match stores the cert/key/profile encrypted on a
+    # dedicated branch of this same repo and reuses them run after
+    # run - nothing is created unless genuinely missing or expired.
+    match(
+      type: "appstore",
       app_identifier: app_identifier,
       team_id: team_id,
-      filename: "AppStore.mobileprovision",
+      git_url: "https://x-access-token:#{ENV.fetch('GITHUB_TOKEN')}@github.com/OpenProperty-umu/umu-mobile-webapp.git",
+      git_branch: "ios-certs",
+      readonly: false,
     )
-    profile_name = lane_context[SharedValues::SIGH_NAME]
 
     update_code_signing_settings(
       use_automatic_signing: false,
@@ -71,7 +65,7 @@ platform :ios do
       path: "ios/App/App.xcodeproj",
       build_configurations: ["Release"],
       code_sign_identity: "Apple Distribution",
-      profile_name: profile_name,
+      profile_name: lane_context[SharedValues::SIGH_NAME],
     )
 
     # Capacitor 8's iOS template uses Swift Package Manager (the
@@ -87,7 +81,7 @@ platform :ios do
         signingStyle: "manual",
         teamID: team_id,
         provisioningProfiles: {
-          app_identifier => profile_name,
+          app_identifier => lane_context[SharedValues::SIGH_NAME],
         },
       },
     )
